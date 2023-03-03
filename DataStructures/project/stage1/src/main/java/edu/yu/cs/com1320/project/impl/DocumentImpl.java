@@ -1,9 +1,8 @@
 package edu.yu.cs.com1320.project.impl;
 
 import edu.yu.cs.com1320.project.stage1.Document;
-
 import java.net.URI;
-import java.util.Arrays; // can i do this/ do i need to do this
+import java.util.Arrays;
 
 public class DocumentImpl implements Document {
     private URI uri;

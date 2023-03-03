@@ -1,9 +1,14 @@
 package edu.yu.cs.com1320.project;
 
 import edu.yu.cs.com1320.project.impl.DocumentImpl;
+import edu.yu.cs.com1320.project.stage1.DocumentStore;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DocumentTest {
 
@@ -37,55 +42,55 @@ public class DocumentTest {
     @Test // expected output: IAE
     public void nullUriInConstructor(){
         URI myUri = null;
-        DocumentImpl doc = new DocumentImpl(myUri, "hello");
+        try {
+            DocumentImpl doc = new DocumentImpl(myUri, "hello");
+            fail("null URI should've thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     @Test // expected output: IAE
-    public void nullTextInConstructor(){
+    public void nullTextInConstructor() throws URISyntaxException {
         String text = null;
-        URI myUri;
+        URI myUri  = new URI("http://edu.yu.cs/com1320/project/doc1");
         try {
-            myUri = new URI("hello");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            DocumentImpl doc = new DocumentImpl(myUri, text);
+            fail("null Text should've thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
         }
-        DocumentImpl doc = new DocumentImpl(myUri, text);
     }
 
     @Test // expected output: IAE
-    public void nullByteDataInConstructor(){
+    public void nullByteDataInConstructor() throws URISyntaxException {
         byte[] nullByte = null;
-        URI myUri;
+        URI myUri = new URI("http://edu.yu.cs/com1320/project/doc1");
         try {
-            myUri = new URI("hello");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            DocumentImpl doc = new DocumentImpl(myUri, nullByte);
+            fail("null byte[] should've thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
         }
-        DocumentImpl doc = new DocumentImpl(myUri, nullByte);
     }
 
     @Test // expected output: IAE
-    public void emptyStringInConstructor(){
+    public void emptyStringInConstructor() throws URISyntaxException {
         String text = "";
-        URI myUri;
+        URI myUri = new URI("http://edu.yu.cs/com1320/project/doc1");
         try {
-            myUri = new URI("hello");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            DocumentImpl doc = new DocumentImpl(myUri, text);
+            fail("null byte[] should've thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
         }
-        DocumentImpl doc = new DocumentImpl(myUri, text);
     }
 
     @Test // expected output: IAE
-    public void emptyByteDataInConstructor(){
+    public void emptyByteDataInConstructor() throws URISyntaxException {
         byte[] emptyByte = new byte[0];
-        URI myUri;
+        URI uri = new URI("http://edu.yu.cs/com1320/project/doc1");
         try {
-            myUri = new URI("hello");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            DocumentImpl doc = new DocumentImpl(uri, emptyByte);
+            fail("null byte[] should've thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
         }
-        DocumentImpl doc = new DocumentImpl(myUri, emptyByte);
     }
 
     @Test // expected output: IAE

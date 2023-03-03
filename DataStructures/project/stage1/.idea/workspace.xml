@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6cfffe01-331c-4c8f-b37a-7c8ddbf65a08" name="Changes" comment="first push">
-      <change afterPath="$PROJECT_DIR$/src/test/java/edu/yu/cs/com1320/project/DocumentStoreImplTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/impl/DocumentImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/impl/DocumentImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/impl/DocumentStoreImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/impl/DocumentStoreImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/impl/HashTableImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/impl/HashTableImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/stage1/DocumentStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/yu/cs/com1320/project/stage1/DocumentStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/edu/yu/cs/com1320/project/DocumentStoreTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/edu/yu/cs/com1320/project/DocumentStoreTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/edu/yu/cs/com1320/project/DocumentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/edu/yu/cs/com1320/project/DocumentTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stage1/.idea/workspace.xml" beforeDir="false" />
-    </list>
+    <list default="true" id="6cfffe01-331c-4c8f-b37a-7c8ddbf65a08" name="Changes" comment="first push" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,7 +19,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -58,22 +47,7 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.DocumentStoreTest">
-    <configuration name="DocumentStoreImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="stage1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.DocumentStoreImplTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.HashTest">
     <configuration name="DocumentStoreTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage1" />
       <extension name="coverage">
@@ -89,7 +63,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DocumentTest.equalsTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DocumentTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage1" />
       <extension name="coverage">
         <pattern>
@@ -99,24 +73,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project" />
       <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.DocumentTest" />
-      <option name="METHOD_NAME" value="equalsTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DocumentTest.getKeyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="stage1" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.DocumentTest" />
-      <option name="METHOD_NAME" value="getKeyTest" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -136,13 +93,44 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="HashTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.HashTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HashTest.putAndGetTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.HashTest" />
+      <option name="METHOD_NAME" value="putAndGetTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.HashTest" />
+        <item itemvalue="JUnit.HashTest.putAndGetTest" />
+        <item itemvalue="JUnit.DocumentTest" />
         <item itemvalue="JUnit.DocumentStoreTest" />
         <item itemvalue="JUnit.HashTableImplTest" />
-        <item itemvalue="JUnit.DocumentStoreImplTest" />
-        <item itemvalue="JUnit.DocumentTest.equalsTest" />
-        <item itemvalue="JUnit.DocumentTest.getKeyTest" />
       </list>
     </recent_temporary>
   </component>

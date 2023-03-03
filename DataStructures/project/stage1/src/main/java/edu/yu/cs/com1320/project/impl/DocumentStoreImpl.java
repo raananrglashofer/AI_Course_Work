@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-public class DocumentStoreImpl implements DocumentStore { // figure this out - caused by adding enum
+public class DocumentStoreImpl implements DocumentStore {
     private HashTableImpl table = new HashTableImpl();
     public DocumentStoreImpl(){
     }
@@ -32,8 +32,9 @@ public class DocumentStoreImpl implements DocumentStore { // figure this out - c
             throw new IllegalArgumentException();
         }
         if(input == null){
-            delete(uri);
-            return 0; // fix
+            DocumentImpl deletedDoc = (DocumentImpl) this.table.put(uri, null);
+            int hash = deletedDoc.hashCode();
+            return hash;
         }
         byte[] byteArray;
         try {
@@ -43,7 +44,7 @@ public class DocumentStoreImpl implements DocumentStore { // figure this out - c
         }
         DocumentImpl doc = null;
         if(format == DocumentFormat.TXT){
-            doc = new DocumentImpl(uri, byteToString(byteArray)); // is this giving me the string i want
+            doc = new DocumentImpl(uri, byteToString(byteArray));
         } else if (format == DocumentFormat.BINARY) {
             doc = new DocumentImpl(uri, byteArray);
         }

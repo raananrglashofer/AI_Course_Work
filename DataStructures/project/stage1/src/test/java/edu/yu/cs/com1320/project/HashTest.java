@@ -1,7 +1,9 @@
 package edu.yu.cs.com1320.project;
 
+import edu.yu.cs.com1320.project.impl.DocumentImpl;
 import edu.yu.cs.com1320.project.impl.HashTableImpl;
 import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.security.Key;
 
@@ -38,9 +40,13 @@ public class HashTest {
     public void containsKeyPresent(){
         HashTableImpl hashing = new HashTableImpl();
         hashing.put("A", 24);
-        System.out.println(hashing.containsKey("A"));
-        System.out.println(hashing.containsKey("B"));
-        System.out.println(hashing.containsKey(null));
+        assertTrue(hashing.containsKey("A"));
+        assertFalse(hashing.containsKey("B"));
+        try {
+            hashing.containsKey(null);
+            fail("null key should've thrown NullPointerException");
+        } catch (NullPointerException e) {
+        }
     }
 
     @Test // expected output: 3 (need to make hashFunction public in order to determine if two keys have the same hashcode
