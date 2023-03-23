@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="926a6785-c910-4834-a762-f45f7cd42b93" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="workspaceImportEnabled" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2N7JzJ9Z4LqR6jipAlX22vSm0DW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;/Users/raananglashofer/code/Raanan_Glashofer_800621796/DataStructures/project/stage2/src/main/java/edu/yu/cs/com1320/project/stage2&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/java" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.StageTwoTests">
+    <configuration name="DocumentStoreImplTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.DocumentStoreImplTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StageTwoTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage2" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage2.StageTwoTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StageTwoTests.undoEmptyStack" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage2" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage2.StageTwoTests" />
+      <option name="METHOD_NAME" value="undoEmptyStack" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StageTwoTests.undoMissingUri" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage2" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage2.StageTwoTests" />
+      <option name="METHOD_NAME" value="undoMissingUri" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StageTwoTests.undoPutAfterOverWritten" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage2" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage2.StageTwoTests" />
+      <option name="METHOD_NAME" value="undoPutAfterOverWritten" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.StageTwoTests" />
+        <item itemvalue="JUnit.DocumentStoreImplTests" />
+        <item itemvalue="JUnit.StageTwoTests.undoPutAfterOverWritten" />
+        <item itemvalue="JUnit.StageTwoTests.undoMissingUri" />
+        <item itemvalue="JUnit.StageTwoTests.undoEmptyStack" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="926a6785-c910-4834-a762-f45f7cd42b93" name="Changes" comment="" />
+      <created>1679009447776</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1679009447776</updated>
+    </task>
+    <servers />
+  </component>
+</project>
