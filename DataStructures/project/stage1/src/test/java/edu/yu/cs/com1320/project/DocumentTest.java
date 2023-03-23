@@ -1,10 +1,8 @@
 package edu.yu.cs.com1320.project;
 
-import edu.yu.cs.com1320.project.impl.DocumentImpl;
-import edu.yu.cs.com1320.project.stage1.DocumentStore;
+import edu.yu.cs.com1320.project.stage1.impl.DocumentImpl;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 

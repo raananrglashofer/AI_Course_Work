@@ -1,7 +1,5 @@
 package edu.yu.cs.com1320.project.stage1;
 
-import edu.yu.cs.com1320.project.impl.DocumentStoreImpl;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;

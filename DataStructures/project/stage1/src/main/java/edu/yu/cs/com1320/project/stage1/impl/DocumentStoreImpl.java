@@ -1,7 +1,10 @@
-package edu.yu.cs.com1320.project.impl;
+package edu.yu.cs.com1320.project.stage1.impl;
 
+import edu.yu.cs.com1320.project.impl.HashTableImpl;
 import edu.yu.cs.com1320.project.stage1.Document;
 import edu.yu.cs.com1320.project.stage1.DocumentStore;
+import edu.yu.cs.com1320.project.stage1.impl.DocumentImpl;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;

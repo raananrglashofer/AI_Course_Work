@@ -1,4 +1,4 @@
-package edu.yu.cs.com1320.project.impl;
+package edu.yu.cs.com1320.project.stage1.impl;
 
 import edu.yu.cs.com1320.project.stage1.Document;
 import java.net.URI;

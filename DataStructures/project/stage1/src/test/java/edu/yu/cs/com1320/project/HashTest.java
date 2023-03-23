@@ -1,11 +1,8 @@
 package edu.yu.cs.com1320.project;
 
-import edu.yu.cs.com1320.project.impl.DocumentImpl;
 import edu.yu.cs.com1320.project.impl.HashTableImpl;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.security.Key;
 
 public class HashTest {
 

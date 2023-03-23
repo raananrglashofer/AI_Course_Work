@@ -1,7 +1,7 @@
 package edu.yu.cs.com1320.project;
 
-import edu.yu.cs.com1320.project.impl.DocumentStoreImpl;
-import edu.yu.cs.com1320.project.impl.DocumentImpl;
+import edu.yu.cs.com1320.project.stage1.impl.DocumentStoreImpl;
+import edu.yu.cs.com1320.project.stage1.impl.DocumentImpl;
 import edu.yu.cs.com1320.project.stage1.DocumentStore;
 import org.junit.Test;
 import java.net.URI;

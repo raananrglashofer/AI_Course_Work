@@ -2,7 +2,7 @@ package edu.yu.cs.com1320.project.impl;
 
 import edu.yu.cs.com1320.project.HashTable;
 
-public class HashTableImpl implements HashTable {
+public class HashTableImpl<Key, Value> implements HashTable<Key, Value> {
     private Object[][] hashTable = new Object[5][10];
     private class Entry<Key,Value>{
         Key key;
