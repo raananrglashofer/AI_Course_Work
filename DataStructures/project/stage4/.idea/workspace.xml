@@ -44,56 +44,16 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="JUnit.testing">
-    <configuration name="MinHeapTest.NoSuchElementExceptionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.MinHeapTests">
+    <configuration name="All in stage4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.impl.MinHeapTest" />
-      <option name="METHOD_NAME" value="NoSuchElementExceptionTest" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MinHeapTest.doubleArrayTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="stage4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.impl.MinHeapTest" />
-      <option name="METHOD_NAME" value="doubleArrayTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MinHeapTest.getArrayIndexTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="stage4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.impl.MinHeapTest" />
-      <option name="METHOD_NAME" value="getArrayIndexTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="testing" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DocStoreImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage4" />
       <extension name="coverage">
         <pattern>
@@ -102,35 +62,64 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage4.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage4.impl.testing" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage4.impl.DocStoreImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="testing.stage3UndoByURIThatImpactsOne" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="HeapImplTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage4" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage4.impl.*" />
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage4.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage4.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage4.impl.testing" />
-      <option name="METHOD_NAME" value="stage3UndoByURIThatImpactsOne" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage4" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage4.HeapImplTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MinHeapTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.impl" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.impl.MinHeapTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MinHeapTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.impl" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.impl.MinHeapTests" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.testing" />
-        <item itemvalue="JUnit.testing.stage3UndoByURIThatImpactsOne" />
-        <item itemvalue="JUnit.MinHeapTest.doubleArrayTest" />
-        <item itemvalue="JUnit.MinHeapTest.NoSuchElementExceptionTest" />
-        <item itemvalue="JUnit.MinHeapTest.getArrayIndexTest" />
+        <item itemvalue="JUnit.MinHeapTests" />
+        <item itemvalue="JUnit.MinHeapTest" />
+        <item itemvalue="JUnit.DocStoreImplTest" />
+        <item itemvalue="JUnit.HeapImplTests" />
+        <item itemvalue="JUnit.All in stage4" />
       </list>
     </recent_temporary>
   </component>
@@ -144,5 +133,25 @@
       <updated>1681846040533</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/DocStoreImplTest.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/test/java/DocStoreImplTest.java</url>
+          <line>89</line>
+          <properties class="edu.yu.cs.com1320.project.stage4.impl.DocStoreImplTest" method="setDocCountLimitAndPassItWithUndo">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -1,7 +1,10 @@
 package edu.yu.cs.com1320.project.impl;
 
 import edu.yu.cs.com1320.project.MinHeap;
+
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 
@@ -11,33 +14,55 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 
     @Override
     public void reHeapify(E element) {
-        if(element == null){
-            throw new NoSuchElementException();
+
+//        boolean elementInHeap = false;
+//        for(int i = 1; i < this.elements.length; i++){
+//            if(this.elements[i] != null) {
+//                if(this.elements[i].equals(element)) {
+//                    elementInHeap = true;
+//                    break;
+//                }
+//            }
+//        }
+//        if(elementInHeap == false){
+//            throw new NoSuchElementException();
+//        }
+
+        getArrayIndex(element); // just checking if element is in the array - if not then will throw NoSuchElementException
+        MinHeapImpl<E> newHeap = new MinHeapImpl<>();
+        for(E e : this.elements){
+            if(e != null){
+                newHeap.insert(e);
+            }
         }
-        int index = getArrayIndex(element);// just checking if element is in the array - if not then will throw NoSuchElementException
-        //MinHeapImpl heaped = new MinHeapImpl<>();
-        if(isGreater(index/2, index)){ // is child smaller than parent
-            upHeap(index);
-        }
-        else{
-            downHeap(index);
+
+        for(int i = 1; i < this.elements.length; i++){
+            if(this.elements[i] != null) {
+                this.elements[i] = newHeap.remove();
+            }
         }
     }
 
     @Override
     protected int getArrayIndex(E element) {
+
         if(element == null){
             throw new NoSuchElementException();
         }
+        int index = 0;
+        boolean inHeap = false;
         for(int i = 1; i < this.elements.length; i++){
-            if(elements[i] == null){
-                throw new NoSuchElementException();
-            }
-            if(elements[i].equals(element)){
-                return i;
+            if(elements[i] != null) {
+                if(elements[i].equals(element)) {
+                    inHeap = true;
+                    index = i;
+                }
             }
         }
-        throw new NoSuchElementException(); // if i was never returned then it means the element is not in the array/heap
+//        if(inHeap == false) {
+//            throw new NoSuchElementException();
+//        }
+        return index;
     }
 
     @Override

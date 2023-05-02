@@ -26,6 +26,8 @@ public class DocumentStoreImpl implements DocumentStore {
     private int maxBytesStored;
     private int docsCount;
     private int bytesCount;
+    private boolean wasMaxDocsSet = false;
+    private boolean wasMaxBytesSet = false;
 
     public DocumentStoreImpl(){
     }
@@ -41,36 +43,46 @@ public class DocumentStoreImpl implements DocumentStore {
         DocumentImpl doc = null;
         if(format == DocumentFormat.TXT){
             doc = new DocumentImpl(uri, byteToString(tryReadingInput(input)));
-            if(doc.getDocumentTxt().getBytes().length > this.maxBytesStored){
-                throw new IllegalArgumentException();
-            }
-            if((this.bytesCount + doc.getDocumentTxt().getBytes().length) > maxBytesStored){
-                removeFromEverything();
+            if(wasMaxBytesSet == true) {
+                if (doc.getDocumentTxt().getBytes().length > this.maxBytesStored) {
+                    throw new IllegalArgumentException();
+                }
+                if ((this.bytesCount + doc.getDocumentTxt().getBytes().length) > maxBytesStored) {
+                    removeFromEverything();
+                }
             }
             this.bytesCount += doc.getDocumentTxt().getBytes().length;
         } else if (format == DocumentFormat.BINARY) {
             doc = new DocumentImpl(uri, tryReadingInput(input));
             // if doc is bigger than size constraint throw IAE
-            if(doc.getDocumentBinaryData().length > this.maxBytesStored){
-                throw new IllegalArgumentException();
-            }
-            if((this.bytesCount + doc.getDocumentBinaryData().length) > maxBytesStored){
-                removeFromEverything();
+            if(wasMaxBytesSet == true) {
+                if (doc.getDocumentBinaryData().length > this.maxBytesStored) {
+                    throw new IllegalArgumentException();
+                }
+                if ((this.bytesCount + doc.getDocumentBinaryData().length) > maxBytesStored) {
+                    removeFromEverything();
+                }
             }
             this.bytesCount += doc.getDocumentBinaryData().length;
         }
         DocumentImpl data = (DocumentImpl) this.table.put(uri, doc);
-        if(doc != null){ // is this my only way to keep track of the number of docs
-            if(this.docsCount == this.maxDocsStored){
-                removeFromEverything();
+        if(doc != null){
+            if(wasMaxDocsSet == true) {
+                if (this.docsCount == this.maxDocsStored) {
+                    removeFromEverything();
+                }
             }
-            docsCount++;
         }
         addToTrie(doc);
-        this.heap.insert(doc);
+        addToHeap(doc);
         Document document = get(uri);
         // double check if lambda is correct with heap - also figure out remove logic when doc isn't lowest value
-        Function<URI, Boolean> undo = (URI uri1) -> {table.put(uri1, data); removeFromTrie(document); heap.remove(); return true;};
+        Function<URI, Boolean> undo = (URI uri1) -> {
+            table.put(uri1, data);
+            removeFromTrie(document);
+            removeFromHeap(document);
+            return true;
+        };
         GenericCommand command = new GenericCommand(uri, undo);
         commandStack.push(command);
         //data.setLastUseTime(nanoTime()); // is this what i need to do to set nanoTime
@@ -83,8 +95,10 @@ public class DocumentStoreImpl implements DocumentStore {
 
     @Override
     public Document get(URI uri) {
-        this.table.get(uri).setLastUseTime(nanoTime()); // I believe that setting the time here will work for put, get, and delete
-        this.heap.reHeapify(this.table.get(uri));
+        if(this.table.get(uri) != null) {
+            this.table.get(uri).setLastUseTime(System.nanoTime());
+            this.heap.reHeapify(this.table.get(uri));// I believe that setting the time here will work for put, get, and delete
+        }
         return (Document) this.table.get(uri);
     }
 
@@ -95,35 +109,28 @@ public class DocumentStoreImpl implements DocumentStore {
         }
         removeFromTrie(this.table.get(uri)); // removes all values of Document in the trie
         DocumentImpl deletedDoc = (DocumentImpl) this.table.put(uri, null);
-        docsCount--;
+        removeFromHeap(deletedDoc);
         if(deletedDoc.getDocumentBinaryData() != null) {
             bytesCount -= deletedDoc.getDocumentBinaryData().length; // double check that deletedDoc works here
         } else{
             bytesCount -= deletedDoc.getDocumentTxt().getBytes().length; // double check that deletedDoc works here
         }
-        this.heap.remove(); // based off put right before, the doc to delete should be at the top of the heap
         storedHash = deletedDoc.hashCode();
-        Function<URI, Boolean> undo = (URI uri1) -> {table.put(uri, deletedDoc); addToTrie(deletedDoc); heap.insert(deletedDoc); return true;};
+        Function<URI, Boolean> undo = (URI uri1) -> {
+            table.put(uri, deletedDoc);
+            addToTrie(deletedDoc);
+            addToHeap(deletedDoc);
+            deletedDoc.setLastUseTime(System.nanoTime());
+            return true;
+        };
         GenericCommand command = new GenericCommand(uri, undo);
         commandStack.push(command);
         return true;
     }
-    // need to add to both undos the logic for checking if we need to remove everything
     @Override
     public void undo() throws IllegalStateException {
         if(this.commandStack.size() == 0){
             throw new IllegalStateException();
-        }
-        if(this.commandStack.peek() instanceof GenericCommand) {
-            GenericCommand temp = (GenericCommand) this.commandStack.peek();
-            genericCommandRemove(temp);
-        }
-        else{
-            CommandSet temp = (CommandSet) this.commandStack.peek();
-            Set<GenericCommand> values = new HashSet<>(getCommandSetValues(temp));
-            for(GenericCommand g : values){
-                genericCommandRemove(g);
-            }
         }
         this.commandStack.pop().undo();
     }
@@ -138,11 +145,10 @@ public class DocumentStoreImpl implements DocumentStore {
             if(this.commandStack.peek() instanceof GenericCommand) {
                 GenericCommand temp = (GenericCommand) this.commandStack.pop();
                 if(temp.getTarget().equals(uri)){
-                    genericCommandRemove(temp); // I don't think it matters whether it is a pop or a peek
+                    //genericCommandRemove(temp); // I don't think it matters whether it is a pop or a peek
                     uriFound = true;
                     try {
                         temp.undo();
-                        this.get((URI) temp.getTarget()); // does calling get set the time on the doc?
                     } catch(IllegalStateException e){}
                     putBackStack(tempStack, this.commandStack);
                     return;
@@ -156,10 +162,9 @@ public class DocumentStoreImpl implements DocumentStore {
                     Set<GenericCommand> values = new HashSet<>(getCommandSetValues(tempSet));
                     for(GenericCommand g : values){
                         if(g.getTarget().equals(uri)){
-                            genericCommandRemove(g); // I don't think it matters whether it is a pop or a peek
+                       //     genericCommandRemove(g); // I don't think it matters whether it is a pop or a peek
                             try{
                                 g.undo();
-                                this.get((URI) g.getTarget()); // does calling get set the time on the doc?
                             } catch(IllegalStateException e) {
                             }
                         } else{
@@ -185,7 +190,7 @@ public class DocumentStoreImpl implements DocumentStore {
         Comparator<Document> comparator = (Document doc1, Document doc2) -> (doc2.wordCount(keyword) - doc1.wordCount(keyword));
         List<Document> sorted = this.trie.getAllSorted(keyword, comparator);
         for(Document d : sorted){
-            d.setLastUseTime(nanoTime());
+            d.setLastUseTime(System.nanoTime());
             this.heap.reHeapify(d);
         }
         return sorted;
@@ -196,7 +201,7 @@ public class DocumentStoreImpl implements DocumentStore {
         Comparator<Document> comparator = (Document doc1, Document doc2) -> (doc2.wordCount(keywordPrefix) - doc1.wordCount(keywordPrefix));
         List<Document> sorted = this.trie.getAllWithPrefixSorted(keywordPrefix, comparator);
         for(Document d : sorted){
-            d.setLastUseTime(nanoTime());
+            d.setLastUseTime(System.nanoTime());
             this.heap.reHeapify(d);
         }
         return sorted;
@@ -214,14 +219,13 @@ public class DocumentStoreImpl implements DocumentStore {
         // add Uris to set, delete doc from hashTable, and delete doc from trie
         for(Document d : deletedDocs){
             DocumentImpl deletedDoc = this.table.put(d.getKey(), null);
-            docsCount--;
             if(deletedDoc.getDocumentBinaryData() != null) {
                 bytesCount -= d.getDocumentBinaryData().length;
             } else{
                 bytesCount -= d.getDocumentTxt().getBytes().length;
             }
-            heap.remove(); // based off put right before, the doc to delete should be at the top of the heap
-            Function<URI, Boolean> undo = (URI uri1) -> {table.put(d.getKey(), deletedDoc); addToTrie(deletedDoc); heap.insert(deletedDoc); return true;};
+            removeFromHeap(d); // based off put right before, the doc to delete should be at the top of the heap
+            Function<URI, Boolean> undo = (URI uri1) -> {table.put(d.getKey(), deletedDoc); addToTrie(deletedDoc); addToHeap(deletedDoc); return true;};
             GenericCommand command = new GenericCommand(d.getKey(), undo);
             commands.addCommand(command);
             deletedUris.add(d.getKey());
@@ -241,14 +245,13 @@ public class DocumentStoreImpl implements DocumentStore {
         CommandSet<GenericCommand> commands = new CommandSet();
         for(Document d : deletedDocs){
             DocumentImpl deletedDoc = this.table.put(d.getKey(), null);
-            docsCount--;
             if(deletedDoc.getDocumentBinaryData() != null) {
                 bytesCount -= d.getDocumentBinaryData().length;
             } else{
                 bytesCount -= d.getDocumentTxt().getBytes().length;
             }
-            heap.remove(); // should i be inserting d or deletedDoc in lambda ?
-            Function<URI, Boolean> undo = (URI uri1) -> {table.put(d.getKey(), deletedDoc); addToTrie(deletedDoc); heap.insert(deletedDoc); return true;};
+            removeFromHeap(d); // should i be inserting d or deletedDoc in lambda ?
+            Function<URI, Boolean> undo = (URI uri1) -> {table.put(d.getKey(), deletedDoc); addToTrie(deletedDoc); addToHeap(deletedDoc); return true;};
             GenericCommand command = new GenericCommand(d.getKey(), undo);
             commands.addCommand(command);
             deletedUris.add(d.getKey());
@@ -263,6 +266,7 @@ public class DocumentStoreImpl implements DocumentStore {
         if(limit < 0){
             throw new IllegalArgumentException();
         }
+        this.wasMaxDocsSet = true;
         this.maxDocsStored = limit;
         while(docsCount > limit) {
             removeFromEverything();
@@ -274,6 +278,7 @@ public class DocumentStoreImpl implements DocumentStore {
         if(limit < 0){
             throw new IllegalArgumentException();
         }
+        wasMaxBytesSet = true;
         this.maxBytesStored = limit;
         while(bytesCount > limit) {
             removeFromEverything();
@@ -325,49 +330,95 @@ public class DocumentStoreImpl implements DocumentStore {
         return returnSet;
     }
 
-    private void genericCommandRemove(GenericCommand g){
-        if(this.get((URI) g.getTarget()).getDocumentBinaryData() != null) {
-            if((bytesCount + this.get((URI) g.getTarget()).getDocumentBinaryData().length) > maxBytesStored){
-                while(bytesCount > maxBytesStored){
-                    removeFromEverything();
+    // This method might be redundent because I may be doing it anyways when I undo and it goes to my
+    // my put or delete
+    // test for this potential error
+//    private void genericCommandRemove(GenericCommand g){
+//        // no get because it was deleted
+//        if(this.get((URI) g.getTarget()).getDocumentBinaryData() != null) {
+//            if (wasMaxBytesSet == true) {
+//                if ((bytesCount + this.get((URI) g.getTarget()).getDocumentBinaryData().length) > maxBytesStored) {
+//                    while (bytesCount > maxBytesStored) {
+//                        removeFromEverything();
+//                    }
+//                }
+//            } else {
+//                if ((bytesCount + this.get((URI) g.getTarget()).getDocumentTxt().getBytes().length) > maxBytesStored) {
+//                    while (bytesCount > maxBytesStored) {
+//                        removeFromEverything();
+//                    }
+//                }
+//            }
+//        }
+//        if(wasMaxDocsSet == true) {
+//            if (docsCount == maxDocsStored) {
+//                removeFromEverything();
+//            }
+//        }
+//        this.get((URI) g.getTarget()); // does calling get set the time on the doc?
+//    }
+
+    private void removeCommand(Document doc){
+        boolean goneInWhile = false;
+        boolean uriFound = false;
+        StackImpl<Undoable> tempStack = new StackImpl<Undoable>();
+        while(commandStack.size() > 0){
+            goneInWhile = true;
+            if(this.commandStack.peek() instanceof GenericCommand) {
+                GenericCommand temp = (GenericCommand) this.commandStack.pop();
+                if (temp.getTarget().equals(doc.getKey())) {
+                    uriFound = true;
+                    //this.get((URI) temp.getTarget()); // does calling get set the time on the doc?
+                    // should be putting back the stack without the command that was just popped
+                    putBackStack(tempStack, this.commandStack);
+                    return;
                 }
-            }
-        } else{
-            if((bytesCount + this.get((URI) g.getTarget()).getDocumentTxt().getBytes().length) > maxBytesStored){
-                while(bytesCount > maxBytesStored){
-                    removeFromEverything();
+                tempStack.push(temp);
+            } else {
+                CommandSet tempSet = (CommandSet) this.commandStack.pop();
+                if (tempSet.containsTarget(doc.getKey())) {
+                    CommandSet updatedSet = new CommandSet();
+                    uriFound = true;
+                    Set<GenericCommand> values = new HashSet<>(getCommandSetValues(tempSet));
+                    for (GenericCommand g : values) {
+                        if (g.getTarget().equals(doc.getKey())) {
+                            // idea is that this command will not get added back to commandSet - essentially deleting it
+                           // this.get((URI) g.getTarget()); // does calling get set the time on the doc?
+                        } else {
+                            updatedSet.addCommand(g);
+                        }
+                    }
+                    if (tempSet.size() > 0) {
+                        tempStack.push(updatedSet);
+                    }
+                    putBackStack(tempStack, this.commandStack);
+                    return;
                 }
+                tempStack.push(tempSet);
             }
         }
-        if(docsCount == maxDocsStored){
-            removeFromEverything();
-        }
-        this.get((URI) g.getTarget()); // does calling get set the time on the doc?
+        putBackStack(tempStack, commandStack);
     }
 
     private void removeFromEverything(){
-       // while(this.docsCount > this.maxDocsStored || this.bytesCount > this.maxBytesStored){ // until under limit
-            Document removedDoc = this.heap.remove(); // remove from heap and save
-            removeFromTrie(removedDoc); // remove from trie
-            this.table.put(removedDoc.getKey(), null); // choosing to call this over delete to remove from hashTable
-            for(int i = 0; i < commandStack.size(); i++){
-                if(this.commandStack.peek() instanceof GenericCommand) {
-                    if(((GenericCommand<?>) this.commandStack.peek()).getTarget().equals(removedDoc.getKey())){
-                        this.commandStack.pop(); // should remove it from commandStack
-                    }
-                } else if(this.commandStack.peek() instanceof CommandSet<?>){
-                    Set<GenericCommand> values = getCommandSetValues((CommandSet<GenericCommand>) this.commandStack.peek());
-                    for (GenericCommand g : values){
-                        if(g.getTarget().equals(removedDoc.getKey())){
-                            ((CommandSet<GenericCommand>) this.commandStack.peek()).remove(g);
-                            values.remove(g);
-                        }
-                    }
-                    if(values.isEmpty()){
-                        this.commandStack.pop(); // if all commands from the set are removed then pop off stack
-                    }
-                }
-            }
-       // }
+        Document removedDoc = this.heap.remove(); // remove from heap and save
+        removeFromTrie(removedDoc); // remove from trie
+        removeCommand(removedDoc); // remove from CommandStack
+        this.table.put(removedDoc.getKey(), null); // choosing to call this over delete to remove from hashTable
+        docsCount--;
+    }
+
+    private void addToHeap(Document doc){
+        this.heap.insert(doc);
+        doc.setLastUseTime(System.nanoTime());
+        this.heap.reHeapify(doc);
+        docsCount++;
+    }
+
+    private void removeFromHeap(Document doc){
+        doc.setLastUseTime(System.nanoTime());
+        this.heap.reHeapify(doc);
+        this.heap.remove();
+        docsCount--;
     }
 }

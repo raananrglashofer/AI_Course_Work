@@ -63,9 +63,10 @@ public class MinHeapTest {
     @Test
     public void reHeapifyTest(){
         MinHeapImpl<Integer> heap = new MinHeapImpl<>();
+        int check = 12;
         for(int i = 1; i < 11; i++){
             heap.insert(i);
         }
-
+        heap.insert(check);
     }
 }
