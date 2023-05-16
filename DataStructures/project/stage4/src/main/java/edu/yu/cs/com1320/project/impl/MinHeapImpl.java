@@ -14,7 +14,6 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 
     @Override
     public void reHeapify(E element) {
-
 //        boolean elementInHeap = false;
 //        for(int i = 1; i < this.elements.length; i++){
 //            if(this.elements[i] != null) {
@@ -27,7 +26,6 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 //        if(elementInHeap == false){
 //            throw new NoSuchElementException();
 //        }
-
         getArrayIndex(element); // just checking if element is in the array - if not then will throw NoSuchElementException
         MinHeapImpl<E> newHeap = new MinHeapImpl<>();
         for(E e : this.elements){
@@ -35,7 +33,6 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
                 newHeap.insert(e);
             }
         }
-
         for(int i = 1; i < this.elements.length; i++){
             if(this.elements[i] != null) {
                 this.elements[i] = newHeap.remove();
@@ -45,7 +42,6 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 
     @Override
     protected int getArrayIndex(E element) {
-
         if(element == null){
             throw new NoSuchElementException();
         }
@@ -59,7 +55,7 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
                 }
             }
         }
-//        if(inHeap == false) {
+//       if(inHeap == false) {
 //            throw new NoSuchElementException();
 //        }
         return index;

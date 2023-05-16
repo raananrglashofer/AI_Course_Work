@@ -44,7 +44,12 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="JUnit.MinHeapTests">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/java" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.DocumentStoreImplTest.stage4TestUndoAfterMaxDocCount">
     <configuration name="All in stage4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage4" />
       <option name="PACKAGE_NAME" value="" />
@@ -53,32 +58,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DocStoreImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DocumentStoreImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage4.impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage4.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage4.impl.DocStoreImplTest" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DocumentStoreImplTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HeapImplTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DocumentStoreImplTest.stage4TestUndoAfterMaxDocCount" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage4.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage4" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage4.HeapImplTests" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DocumentStoreImplTest" />
+      <option name="METHOD_NAME" value="stage4TestUndoAfterMaxDocCount" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -115,11 +109,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DocumentStoreImplTest.stage4TestUndoAfterMaxDocCount" />
+        <item itemvalue="JUnit.DocumentStoreImplTest" />
+        <item itemvalue="JUnit.All in stage4" />
         <item itemvalue="JUnit.MinHeapTests" />
         <item itemvalue="JUnit.MinHeapTest" />
-        <item itemvalue="JUnit.DocStoreImplTest" />
-        <item itemvalue="JUnit.HeapImplTests" />
-        <item itemvalue="JUnit.All in stage4" />
       </list>
     </recent_temporary>
   </component>
@@ -150,6 +144,15 @@
             <option name="WATCH_EXIT" value="false" />
           </properties>
           <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/test/java/DocumentStoreImplTest.java</url>
+          <line>199</line>
+          <properties class="DocumentStoreImplTest" method="stage4TestUndoAfterMaxDocCount">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
