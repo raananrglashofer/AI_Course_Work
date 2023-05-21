@@ -39,12 +39,16 @@ public class DocumentStoreImpl implements DocumentStore {
         private long lastUse;
         private DocTemp(URI uri){
             this.uri = uri;
+            setLastUse(BTree.get(uri).getLastUseTime());
         }
         private long getLastUse(){
             return this.lastUse;
         }
         private void setLastUse(long lastUse){
             this.lastUse = lastUse;
+        }
+        private URI getUri(){
+            return this.uri;
         }
         @Override
         public int compareTo(DocTemp o) {
@@ -110,12 +114,13 @@ public class DocumentStoreImpl implements DocumentStore {
             }
         }
         addToTrie(doc.getKey());
-        addToHeap(doc.getKey());
+        DocTemp docTemp = new DocTemp(doc.getKey());
+        addToHeap(docTemp);
         Document document = get(uri);
         Function<URI, Boolean> undo = (URI uri1) -> {
             this.BTree.put(uri1, data);
             removeFromTrie(document.getKey());
-            removeFromHeap(document.getKey());
+            removeFromHeap(docTemp);
             return true;
         };
         GenericCommand command = new GenericCommand(uri, undo);
@@ -142,7 +147,8 @@ public class DocumentStoreImpl implements DocumentStore {
         }
         removeFromTrie(uri); // removes all values of Document in the trie
         DocumentImpl deletedDoc = (DocumentImpl) this.BTree.put(uri, null);
-        removeFromHeap(uri);
+        DocTemp docTemp = new DocTemp(uri);
+        removeFromHeap(docTemp);
         if(deletedDoc.getDocumentBinaryData() != null) {
             bytesCount -= deletedDoc.getDocumentBinaryData().length; // double check that deletedDoc works here
         } else{
@@ -152,7 +158,7 @@ public class DocumentStoreImpl implements DocumentStore {
         Function<URI, Boolean> undo = (URI uri1) -> {
             this.BTree.put(uri, deletedDoc);
             addToTrie(uri);
-            addToHeap(uri);
+            addToHeap(docTemp);
             deletedDoc.setLastUseTime(System.nanoTime());
             return true;
         };
@@ -272,8 +278,9 @@ public class DocumentStoreImpl implements DocumentStore {
             } else {
                 bytesCount -= getFromBTree(u).getDocumentTxt().getBytes().length;
             }
-            removeFromHeap(u);
-            Function<URI, Boolean> undo = (URI uri1) -> {BTree.put(u, deletedDoc); addToTrie(u); addToHeap(u); return true;};
+            DocTemp docTemp = new DocTemp(u);
+            removeFromHeap(docTemp);
+            Function<URI, Boolean> undo = (URI uri1) -> {BTree.put(u, deletedDoc); addToTrie(u); addToHeap(docTemp); return true;};
             GenericCommand command = new GenericCommand(u, undo);
             commands.addCommand(command);
             removeFromTrie(u);
@@ -296,8 +303,9 @@ public class DocumentStoreImpl implements DocumentStore {
             } else{
                 bytesCount -= getFromBTree(u).getDocumentTxt().getBytes().length;
             }
-            removeFromHeap(u);
-            Function<URI, Boolean> undo = (URI uri1) -> {BTree.put(u, deletedDoc); addToTrie(u); addToHeap(u); return true;};
+            DocTemp docTemp = new DocTemp(u);
+            removeFromHeap(docTemp);
+            Function<URI, Boolean> undo = (URI uri1) -> {BTree.put(u, deletedDoc); addToTrie(u); addToHeap(docTemp); return true;};
             GenericCommand command = new GenericCommand(u, undo);
             commands.addCommand(command);
             removeFromTrie(u);
@@ -350,8 +358,8 @@ public class DocumentStoreImpl implements DocumentStore {
     // exception so I have to deal with it somewhere
     private void removeFromEverything(){
         try{
-            URI uri = this.heap.remove(); // remove from heap and save uri
-            this.BTree.moveToDisk(uri); // move from disk
+            DocTemp docTemp = this.heap.remove(); // remove from heap and save uri
+            this.BTree.moveToDisk(docTemp.getUri()); // move from disk
             docsCount--;
         } catch (Exception e) {}
         // removeFromTrie(uri); // remove from trie
@@ -372,22 +380,23 @@ public class DocumentStoreImpl implements DocumentStore {
 
     private Document getFromBTree(URI uri){
         Document doc = this.BTree.get(uri);
+        DocTemp docTemp = new DocTemp(uri);
         // sets nanoTime --> Now, everytime I call BTree.get I know that the time is being reset
         this.BTree.get(uri).setLastUseTime(System.nanoTime());
-        this.heap.reHeapify(uri);
+        this.heap.reHeapify(docTemp);
         return doc;
     }
 
-    private void addToHeap(URI uri){
-        this.heap.insert(uri);
-        getFromBTree(uri).setLastUseTime(System.nanoTime());
-        this.heap.reHeapify(uri);
+    private void addToHeap(DocTemp docTemp){
+        this.heap.insert(docTemp);
+        getFromBTree(docTemp.getUri()).setLastUseTime(System.nanoTime());
+        this.heap.reHeapify(docTemp);
         docsCount++;
     }
 
-    private void removeFromHeap(URI uri){
-        getFromBTree(uri).setLastUseTime(System.nanoTime());
-        this.heap.reHeapify(uri);
+    private void removeFromHeap(DocTemp docTemp){
+        getFromBTree(docTemp.getUri()).setLastUseTime(System.nanoTime());
+        this.heap.reHeapify(docTemp);
         this.heap.remove();
         docsCount--;
     }

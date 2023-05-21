@@ -3,6 +3,8 @@ package edu.yu.cs.com1320.project.impl;
 import com.google.gson.JsonSerializer;
 import edu.yu.cs.com1320.project.BTree;
 import edu.yu.cs.com1320.project.stage5.PersistenceManager;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -92,7 +94,10 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         Value v = null;
         if(entry != null) {
             if(entry.val instanceof JsonSerializer<?>){ // can i do this
-                v = this.pm.deserialize(k); // when I build DPM it will have try catch so no worries
+                try {
+                    v = this.pm.deserialize(k); // when I build DPM it will have try catch so no worries
+                } catch (IOException e) {}
+                put(k, v);
                 return v;
             }
             return (Value)entry.val;
@@ -150,7 +155,9 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         if(alreadyThere != null)
         {
             if(alreadyThere.val instanceof JsonSerializer<?>){
-                this.pm.delete(k); // try catch in DPM will fix this
+                try {
+                    this.pm.delete(k); // try catch in DPM will fix this
+                } catch (IOException e) {}
             }
             alreadyThere.val = v;
             return valToReturn; // i think this is what i want to return - old value?

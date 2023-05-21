@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import jakarta.xml.bind.DatatypeConverter;
 import java.nio.file.FileSystem;
 
 /**
@@ -15,7 +16,6 @@ import java.nio.file.FileSystem;
  */
 public class DocumentPersistenceManager implements PersistenceManager<URI, Document> {
     private File directory;
-
     public DocumentPersistenceManager(File baseDir){
         if(baseDir != null){
             this.directory = baseDir;
@@ -26,10 +26,10 @@ public class DocumentPersistenceManager implements PersistenceManager<URI, Docum
 
     @Override
     public void serialize(URI uri, Document val) throws IOException {
-        if(val.getDocumentTxt() != null){
-            Gson gson = new Gson();
-
-        }
+        Gson gson = new GsonBuilder().registerTypeAdapter(DocumentImpl.class, new docSerializer()).setPrettyPrinting().create();
+        String json = gson.toJson(val);
+        String filePath = URItoFile(uri);
+        File file = new File(this.directory, filePath);
     }
 
     @Override
@@ -45,19 +45,30 @@ public class DocumentPersistenceManager implements PersistenceManager<URI, Docum
      */
     @Override
     public boolean delete(URI uri) throws IOException {
-        return false;
+        String filePath = URItoFile(uri);
+        File deletedFile = new File(this.directory, filePath);
+        return deletedFile.delete();
+    }
+    private String URItoFile(URI uri){
+        String toFile = uri.toString().replace("http://", "");
+        String path = toFile + ".json";
+        return path;
     }
 
     private class docSerializer implements JsonSerializer<Document>{
         @Override
         public JsonElement serialize(Document document, Type type, JsonSerializationContext jsonSerializationContext) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.add(" ", new JsonPrimitive(document.getDocumentTxt()));
-            //jsonObject.add(" ", document.getKey());
-            //jsonObject.add(" ", new JsonPrimitive(document.getWordMap()));
-            //jsonGenerator.writeObject(document.getDocumentTxt() + " " + document.getKey() + " " + document.getWordMap());
-            //return new JsonPrimitive(document.getDocumentTxt(), document.getKey(), document.getWordMap());
-            return null;
+            if(document.getDocumentTxt() != null) {
+                jsonObject.add("", new JsonPrimitive(document.getDocumentTxt()));
+            } else{
+                String base64Encoded = DatatypeConverter.printBase64Binary(document.getDocumentBinaryData());
+                jsonObject.add("", new JsonPrimitive(base64Encoded));
+            }
+            //context.serialize
+            jsonObject.add("WordMap", (JsonElement) document.getWordMap());
+            jsonObject.add("URI",  document.getKey());
+            return jsonObject;
         }
     }
 
@@ -65,11 +76,9 @@ public class DocumentPersistenceManager implements PersistenceManager<URI, Docum
 
         @Override
         public Document deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonObject jsonObject = new JsonObject();
+
             return null;
         }
-    }
-    private File URItoFile(URI uri){
-        String toFile = uri.toString();
-        return null;
     }
 }
