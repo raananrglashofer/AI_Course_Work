@@ -1,5 +1,6 @@
 package edu.yu.cs.com1320.project.impl;
 
+import com.google.gson.JsonSerializer;
 import edu.yu.cs.com1320.project.BTree;
 import edu.yu.cs.com1320.project.stage5.PersistenceManager;
 import java.util.ArrayList;
@@ -53,23 +54,23 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
 
 }
 
-    public static class Entry // can this be public
+    private static class Entry // can this be public
     {
         private Comparable key;
         private Object val; // can i have object here
         private Node child;
 
-        public Entry(Comparable key, Object val, Node child) // can this be public
+        private Entry(Comparable key, Object val, Node child) // can this be public
         {
             this.key = key;
             this.val = val;
             this.child = child;
         }
-        public Object getValue()
+        private Object getValue()
         {
             return this.val;
         }
-        public Comparable getKey()
+        private Comparable getKey()
         {
             return this.key;
         }
@@ -88,8 +89,12 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
             throw new IllegalArgumentException("argument to get() is null");
         }
         Entry entry = this.get(this.root, k, this.height);
-        if(entry != null)
-        {
+        Value v = null;
+        if(entry != null) {
+            if(entry.val instanceof JsonSerializer<?>){ // can i do this
+                v = this.pm.deserialize(k); // when I build DPM it will have try catch so no worries
+                return v;
+            }
             return (Value)entry.val;
         }
         return null;
@@ -141,17 +146,20 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         }
         //if the key already exists in the b-tree, simply replace the value
         Entry alreadyThere = this.get(this.root, k, this.height);
+        Value valToReturn = (Value) alreadyThere.val;
         if(alreadyThere != null)
         {
+            if(alreadyThere.val instanceof JsonSerializer<?>){
+                this.pm.delete(k); // try catch in DPM will fix this
+            }
             alreadyThere.val = v;
-            return v; // i think this is what i want to return
+            return valToReturn; // i think this is what i want to return - old value?
         }
-
         Node newNode = this.put(this.root, k, v, this.height);
         this.n++;
         if (newNode == null)
         {
-            return v; // i think this is what i want to return
+            return valToReturn; // i think this is what i want to return - old value?
         }
 
         //split the root:
@@ -164,7 +172,7 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         this.root = newRoot;
         //a split at the root always increases the tree height by 1
         this.height++;
-        return v; // i think this is what i want to return
+        return valToReturn; // i think this is what i want to return - old value?
     }
 
     private Node put(Node currentNode, Key key, Value val, int height)

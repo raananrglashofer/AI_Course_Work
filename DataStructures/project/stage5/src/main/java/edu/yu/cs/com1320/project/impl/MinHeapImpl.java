@@ -45,7 +45,6 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 
     @Override
     protected int getArrayIndex(E element) {
-
         if(element == null){
             throw new NoSuchElementException();
         }

@@ -53,10 +53,11 @@ public class DocumentPersistenceManager implements PersistenceManager<URI, Docum
         public JsonElement serialize(Document document, Type type, JsonSerializationContext jsonSerializationContext) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.add(" ", new JsonPrimitive(document.getDocumentTxt()));
-            jsonObject.add(" ", document.getKey());
-            jsonObject.add(" ", new JsonPrimitive(document.getWordMap()));
+            //jsonObject.add(" ", document.getKey());
+            //jsonObject.add(" ", new JsonPrimitive(document.getWordMap()));
             //jsonGenerator.writeObject(document.getDocumentTxt() + " " + document.getKey() + " " + document.getWordMap());
             //return new JsonPrimitive(document.getDocumentTxt(), document.getKey(), document.getWordMap());
+            return null;
         }
     }
 
@@ -66,5 +67,9 @@ public class DocumentPersistenceManager implements PersistenceManager<URI, Docum
         public Document deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             return null;
         }
+    }
+    private File URItoFile(URI uri){
+        String toFile = uri.toString();
+        return null;
     }
 }

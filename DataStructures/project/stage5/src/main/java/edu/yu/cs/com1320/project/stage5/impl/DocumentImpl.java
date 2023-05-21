@@ -117,6 +117,23 @@ public class DocumentImpl implements Document {
             return -1;
         }
     }
+    @Override
+    public int hashCode() {
+        int result = uri.hashCode();
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(binaryData);
+        return Math.abs(result);
+    }
+
+    //Two documents are considered equal if they have the same hashCode
+    @Override
+    public boolean equals(Object obj){
+        DocumentImpl otherDoc = (DocumentImpl) obj;
+        if(this.hashCode() == otherDoc.hashCode()){
+            return true;
+        }
+        return false;
+    }
 
     private void toHashMap(String txt){
         String noPunctuation = txt.replaceAll("\\p{Punct}", ""); // make sure this runs properly
