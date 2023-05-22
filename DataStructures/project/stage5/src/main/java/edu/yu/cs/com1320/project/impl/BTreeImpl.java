@@ -151,22 +151,31 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         }
         //if the key already exists in the b-tree, simply replace the value
         Entry alreadyThere = this.get(this.root, k, this.height);
-        Value valToReturn = (Value) alreadyThere.val;
-        if(alreadyThere != null)
-        {
-            if(alreadyThere.val instanceof JsonSerializer<?>){
+        if(alreadyThere != null) {
+            Value valToReturn = (Value) alreadyThere.val;
+            alreadyThere.val = v;
+            if(v == null){
                 try {
                     this.pm.delete(k); // try catch in DPM will fix this
                 } catch (IOException e) {}
             }
-            alreadyThere.val = v;
+            if(valToReturn == null){
+                if(this.pm != null){
+                    try{
+                        Value val = this.pm.deserialize(k);
+                    } catch(Exception e){
+                        return null;
+                    }
+                }
+                return null;
+            }
             return valToReturn; // i think this is what i want to return - old value?
         }
         Node newNode = this.put(this.root, k, v, this.height);
         this.n++;
         if (newNode == null)
         {
-            return valToReturn; // i think this is what i want to return - old value?
+            return null; // i think this is what i want to return - old value?
         }
 
         //split the root:
@@ -179,7 +188,7 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         this.root = newRoot;
         //a split at the root always increases the tree height by 1
         this.height++;
-        return valToReturn; // i think this is what i want to return - old value?
+        return null; // i think this is what i want to return - old value?
     }
 
     private Node put(Node currentNode, Key key, Value val, int height)

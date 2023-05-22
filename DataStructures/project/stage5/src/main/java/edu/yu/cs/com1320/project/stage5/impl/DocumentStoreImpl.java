@@ -22,7 +22,7 @@ import static java.lang.System.nanoTime;
 import java.io.File;
 
 public class DocumentStoreImpl implements DocumentStore {
-    private BTreeImpl<URI, Document> BTree = new BTreeImpl<>(); // this should parameterized with uri, DocumentImpl shouldn't it?
+    private BTreeImpl<URI, Document> BTree = new BTreeImpl<>();
     private StackImpl<Undoable> commandStack = new StackImpl<Undoable>();
     private TrieImpl<URI> trie = new TrieImpl<>();
     private MinHeapImpl<DocTemp> heap = new MinHeapImpl<>();
@@ -63,7 +63,7 @@ public class DocumentStoreImpl implements DocumentStore {
     }
 
     public DocumentStoreImpl(){
-        this.BTree.setPersistenceManager(null);
+        this.BTree.setPersistenceManager(new DocumentPersistenceManager(null));
     }
     public DocumentStoreImpl(File baseDir){
         this.BTree.setPersistenceManager(new DocumentPersistenceManager(baseDir));
@@ -79,7 +79,7 @@ public class DocumentStoreImpl implements DocumentStore {
             return storedHash;
         }
         DocumentImpl doc = null;
-        Map<String, Integer> wordCountMap = new HashMap<String, Integer>(); // empty wordCountMap to please the constructor
+        Map<String, Integer> wordCountMap = null; // empty wordCountMap to please the constructor
         if(format == DocumentFormat.TXT){
             doc = new DocumentImpl(uri, byteToString(tryReadingInput(input)), wordCountMap);
             if(wasMaxBytesSet == true) {
@@ -118,9 +118,9 @@ public class DocumentStoreImpl implements DocumentStore {
         addToHeap(docTemp);
         Document document = get(uri);
         Function<URI, Boolean> undo = (URI uri1) -> {
-            this.BTree.put(uri1, data);
-            removeFromTrie(document.getKey());
+            removeFromTrie(uri);
             removeFromHeap(docTemp);
+            this.BTree.put(uri1, data);
             return true;
         };
         GenericCommand command = new GenericCommand(uri, undo);
@@ -146,15 +146,16 @@ public class DocumentStoreImpl implements DocumentStore {
             return false;
         }
         removeFromTrie(uri); // removes all values of Document in the trie
-        DocumentImpl deletedDoc = (DocumentImpl) this.BTree.put(uri, null);
         DocTemp docTemp = new DocTemp(uri);
         removeFromHeap(docTemp);
-        if(deletedDoc.getDocumentBinaryData() != null) {
-            bytesCount -= deletedDoc.getDocumentBinaryData().length; // double check that deletedDoc works here
+        Document document = getFromBTree(uri);
+        if(document.getDocumentBinaryData() != null) {
+            bytesCount -= document.getDocumentBinaryData().length; // double check that deletedDoc works here
         } else{
-            bytesCount -= deletedDoc.getDocumentTxt().getBytes().length; // double check that deletedDoc works here
+            bytesCount -= document.getDocumentTxt().getBytes().length; // double check that deletedDoc works here
         }
-        storedHash = deletedDoc.hashCode();
+        storedHash = document.hashCode();
+        DocumentImpl deletedDoc = (DocumentImpl) this.BTree.put(uri, null);
         Function<URI, Boolean> undo = (URI uri1) -> {
             this.BTree.put(uri, deletedDoc);
             addToTrie(uri);
@@ -236,7 +237,7 @@ public class DocumentStoreImpl implements DocumentStore {
         Comparator<URI> comparator = (URI uri1, URI uri2) -> (getFromBTree(uri1).wordCount(keyword) - getFromBTree(uri2).wordCount(keyword));
         //Comparator<URI> doNothingComparator = (URI uri1, URI uri2) -> 0;
         List<URI> urisSorted = this.trie.getAllSorted(keyword, comparator);
-        List<Document> sorted = null;
+        List<Document> sorted = new ArrayList<>();
         for(URI u : urisSorted){
             sorted.add(getFromBTree(u));
         }
@@ -253,7 +254,7 @@ public class DocumentStoreImpl implements DocumentStore {
         Comparator<URI> comparator = (URI uri1, URI uri2) -> (getFromBTree(uri1).wordCount(keywordPrefix) - getFromBTree(uri2).wordCount(keywordPrefix));
         //Comparator<URI> doNothingComparator = (URI uri1, URI uri2) -> 0;
         List<URI> urisSorted = this.trie.getAllWithPrefixSorted(keywordPrefix, comparator);
-        List<Document> sorted = null;
+        List<Document> sorted = new ArrayList<>();
         for(URI u : urisSorted){
             // calling getFromBTree should be updating time and reheapifying
             sorted.add(getFromBTree(u));
@@ -272,18 +273,19 @@ public class DocumentStoreImpl implements DocumentStore {
         CommandSet<GenericCommand> commands = new CommandSet();
         // delete doc from BTree, and delete doc from trie
         for (URI u : deletedUris) {
-            Document deletedDoc = this.BTree.put(u, null);
-            if (deletedDoc.getDocumentBinaryData() != null) {
+            Document document = this.BTree.get(u);
+            if (document.getDocumentBinaryData() != null) {
                 bytesCount -= getFromBTree(u).getDocumentBinaryData().length;
             } else {
                 bytesCount -= getFromBTree(u).getDocumentTxt().getBytes().length;
             }
             DocTemp docTemp = new DocTemp(u);
             removeFromHeap(docTemp);
+            removeFromTrie(u);
+            Document deletedDoc = this.BTree.put(u, null);
             Function<URI, Boolean> undo = (URI uri1) -> {BTree.put(u, deletedDoc); addToTrie(u); addToHeap(docTemp); return true;};
             GenericCommand command = new GenericCommand(u, undo);
             commands.addCommand(command);
-            removeFromTrie(u);
         }
         commandStack.push(commands);
         return deletedUris;
@@ -380,6 +382,9 @@ public class DocumentStoreImpl implements DocumentStore {
 
     private Document getFromBTree(URI uri){
         Document doc = this.BTree.get(uri);
+        if(doc == null){
+            return null;
+        }
         DocTemp docTemp = new DocTemp(uri);
         // sets nanoTime --> Now, everytime I call BTree.get I know that the time is being reset
         this.BTree.get(uri).setLastUseTime(System.nanoTime());

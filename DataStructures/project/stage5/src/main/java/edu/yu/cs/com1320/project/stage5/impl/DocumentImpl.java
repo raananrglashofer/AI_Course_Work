@@ -11,7 +11,7 @@ public class DocumentImpl implements Document {
     private URI uri;
     private String text;
     private byte[] binaryData;
-    private Map<String, Integer> wordCountMap = new HashMap<String, Integer>(); // do i want map or hashmap
+    private Map<String, Integer> wordCountMap = new HashMap<String, Integer>();
     private Boolean isTxt;
     private long lastTimeUsed;
 
@@ -22,10 +22,10 @@ public class DocumentImpl implements Document {
         if(txt == null ){//|| txt.isEmpty()){
             throw new IllegalArgumentException();
         }
-        if(this.wordCountMap == null) {
-            toHashMap(txt); //puts all words into HashMap
-        } else{
+        if(wordCountMap != null) {
             this.wordCountMap = wordCountMap; // document is being deserialized
+        } else{
+            toHashMap(txt); //puts all words into HashMap
         }
         this.uri = uri;
         this.text = txt;
@@ -79,7 +79,7 @@ public class DocumentImpl implements Document {
         if(this.isTxt == false){
             return words;
         }
-        words = wordCountMap.keySet();
+        words = this.wordCountMap.keySet();
         return words;
     }
 
@@ -95,11 +95,12 @@ public class DocumentImpl implements Document {
 
     @Override
     public Map<String, Integer> getWordMap() {
-        return this.wordCountMap;
+        return new HashMap(this.wordCountMap);
     }
 
     @Override // pretty sure this is unnecasary because of the constructor - from piazza
     public void setWordMap(Map<String, Integer> wordMap) {
+        this.wordCountMap = wordMap;
     }
 
     @Override
