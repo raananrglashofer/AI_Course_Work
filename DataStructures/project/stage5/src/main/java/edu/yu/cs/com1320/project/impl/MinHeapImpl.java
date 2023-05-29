@@ -1,6 +1,7 @@
 package edu.yu.cs.com1320.project.impl;
 
 import edu.yu.cs.com1320.project.MinHeap;
+import edu.yu.cs.com1320.project.stage5.impl.DocumentImpl;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -45,7 +46,7 @@ public class MinHeapImpl<E extends Comparable<E>> extends MinHeap<E> {
 
     @Override
     protected int getArrayIndex(E element) {
-        if(element == null){
+        if (element == null) {
             throw new NoSuchElementException();
         }
         int index = 0;

@@ -44,11 +44,18 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
 }</component>
-  <component name="RunManager" selected="JUnit.DocStoreImplTest">
-    <configuration name="All in stage5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.DocumentStoreImplTest">
+    <configuration name="BTreeImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage5" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage5.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage5" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage5.BTreeImplTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -63,21 +70,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage5.impl" />
       <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage5.impl.DocStoreImplTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DocumentStoreAPITest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="stage5" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage5.impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage5.impl" />
-      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage5.impl.DocumentStoreAPITest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -98,7 +90,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DocumentStoreImplTest.stage4TestUndoAfterMaxBytes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DocumentStoreImplTest.testDeleteDoc" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="stage5" />
       <extension name="coverage">
         <pattern>
@@ -108,7 +100,23 @@
       </extension>
       <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage5" />
       <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage5.DocumentStoreImplTest" />
-      <option name="METHOD_NAME" value="stage4TestUndoAfterMaxBytes" />
+      <option name="METHOD_NAME" value="testDeleteDoc" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FailedTests.stage5PushToDiskViaMaxDocCountTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="stage5" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.yu.cs.com1320.project.stage5.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.yu.cs.com1320.project.stage5.impl" />
+      <option name="MAIN_CLASS_NAME" value="edu.yu.cs.com1320.project.stage5.impl.FailedTests" />
+      <option name="METHOD_NAME" value="stage5PushToDiskViaMaxDocCountTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -116,11 +124,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.DocStoreImplTest" />
-        <item itemvalue="JUnit.All in stage5" />
         <item itemvalue="JUnit.DocumentStoreImplTest" />
-        <item itemvalue="JUnit.DocumentStoreImplTest.stage4TestUndoAfterMaxBytes" />
-        <item itemvalue="JUnit.DocumentStoreAPITest" />
+        <item itemvalue="JUnit.DocStoreImplTest" />
+        <item itemvalue="JUnit.BTreeImplTest" />
+        <item itemvalue="JUnit.DocumentStoreImplTest.testDeleteDoc" />
+        <item itemvalue="JUnit.FailedTests.stage5PushToDiskViaMaxDocCountTest" />
       </list>
     </recent_temporary>
   </component>
@@ -145,8 +153,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/DocumentStoreImplTest.java</url>
-          <line>269</line>
-          <option name="timeStamp" value="23" />
+          <line>524</line>
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/test/java/DocumentPersistenceManagerTest.java</url>
@@ -157,39 +165,17 @@
           </properties>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/test/java/BTreeImplTest.java</url>
-          <line>108</line>
-          <properties class="edu.yu.cs.com1320.project.stage5.BTreeImplTest">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/test/java/DocumentStoreImplTest.java</url>
-          <line>359</line>
-          <properties class="edu.yu.cs.com1320.project.stage5.DocumentStoreImplTest">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/test/java/DocumentStoreImplTest.java</url>
-          <line>337</line>
-          <properties class="edu.yu.cs.com1320.project.stage5.DocumentStoreImplTest">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.stage5.impl.DocumentImpl" memberName="wordCountMap" />
         <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.impl.BTreeImpl$Node" memberName="entries" />
+        <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.stage5.impl.DocumentPersistenceManager" memberName="directory" />
+        <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.stage5.impl.DocumentStoreImpl" memberName="BTree" />
+        <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.impl.BTreeImpl" memberName="pm" />
+        <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.stage5.impl.DocumentStoreImpl" memberName="heap" />
+        <PinnedItemInfo parentTag="edu.yu.cs.com1320.project.stage5.impl.DocumentStoreImpl" memberName="docTempSet" />
       </pinned-members>
     </pin-to-top-manager>
   </component>

@@ -33,6 +33,8 @@ public class DocumentStoreImpl implements DocumentStore {
     private int bytesCount;
     private boolean wasMaxDocsSet = false;
     private boolean wasMaxBytesSet = false;
+    private Set<URI> docTempSet = new HashSet<>();
+    private Map<URI, DocTemp> docTempMap = new HashMap<>();
 
     private class DocTemp implements Comparable<DocTemp>{
         private URI uri;
@@ -113,9 +115,9 @@ public class DocumentStoreImpl implements DocumentStore {
                 }
             }
         }
-        addToTrie(doc.getKey());
         DocTemp docTemp = new DocTemp(doc.getKey());
         addToHeap(docTemp);
+        addToTrie(doc.getKey());
         Document document = get(uri);
         Function<URI, Boolean> undo = (URI uri1) -> {
             removeFromTrie(uri);
@@ -142,12 +144,18 @@ public class DocumentStoreImpl implements DocumentStore {
 
     @Override
     public boolean delete(URI uri) {
-        if(this.BTree.get(uri) == null){
+        if(getFromBTree(uri) == null){
             return false;
         }
         removeFromTrie(uri); // removes all values of Document in the trie
-        DocTemp docTemp = new DocTemp(uri);
-        removeFromHeap(docTemp);
+        DocTemp docTemp = null;
+        for(DocTemp d : docTempMap.values()){
+            if(d.getUri().equals(uri)){
+                docTemp = d;
+            }
+        }
+        DocTemp temp = docTemp;// doing this because temp needs to be "final" and it is not earlier
+        removeFromHeap(temp);
         Document document = getFromBTree(uri);
         if(document.getDocumentBinaryData() != null) {
             bytesCount -= document.getDocumentBinaryData().length; // double check that deletedDoc works here
@@ -159,7 +167,7 @@ public class DocumentStoreImpl implements DocumentStore {
         Function<URI, Boolean> undo = (URI uri1) -> {
             this.BTree.put(uri, deletedDoc);
             addToTrie(uri);
-            addToHeap(docTemp);
+            addToHeap(temp);
             deletedDoc.setLastUseTime(System.nanoTime());
             return true;
         };
@@ -361,6 +369,7 @@ public class DocumentStoreImpl implements DocumentStore {
     private void removeFromEverything(){
         try{
             DocTemp docTemp = this.heap.remove(); // remove from heap and save uri
+            this.docTempSet.remove(docTemp.getUri());
             this.BTree.moveToDisk(docTemp.getUri()); // move from disk
             docsCount--;
         } catch (Exception e) {}
@@ -387,6 +396,14 @@ public class DocumentStoreImpl implements DocumentStore {
         }
         DocTemp docTemp = new DocTemp(uri);
         // sets nanoTime --> Now, everytime I call BTree.get I know that the time is being reset
+        if(!this.docTempSet.contains(uri)){
+            this.heap.insert(docTemp);
+            docTempSet.add(uri);
+            docsCount++;
+            if(wasMaxDocsSet){
+                removeFromEverything();
+            }
+        }
         this.BTree.get(uri).setLastUseTime(System.nanoTime());
         this.heap.reHeapify(docTemp);
         return doc;
@@ -394,6 +411,8 @@ public class DocumentStoreImpl implements DocumentStore {
 
     private void addToHeap(DocTemp docTemp){
         this.heap.insert(docTemp);
+        this.docTempSet.add(docTemp.getUri());
+        this.docTempMap.put(docTemp.getUri(), docTemp);
         getFromBTree(docTemp.getUri()).setLastUseTime(System.nanoTime());
         this.heap.reHeapify(docTemp);
         docsCount++;
@@ -403,7 +422,10 @@ public class DocumentStoreImpl implements DocumentStore {
         getFromBTree(docTemp.getUri()).setLastUseTime(System.nanoTime());
         this.heap.reHeapify(docTemp);
         this.heap.remove();
+        this.docTempSet.remove(docTemp.getUri());
+        this.docTempMap.remove(docTemp.getUri());
         docsCount--;
+
     }
     private StackImpl putBackStack(StackImpl temp, StackImpl current){
         while(temp.size() > 0){

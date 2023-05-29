@@ -19,42 +19,38 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
     private PersistenceManager<Key, Value> pm;
 
     //B-tree node data type
-    private static final class Node
-    {
+    private static final class Node {
         private int entryCount; // number of entries
         private Entry[] entries = new Entry[BTreeImpl.MAX]; // the array of children
         private Node next;
         private Node previous;
 
         // create a node with k entries
-    private Node(int k)
-    {
-        this.entryCount = k;
-    }
+        private Node(int k) {
+            this.entryCount = k;
+        }
 
-    private void setNext(Node next)
-    {
-        this.next = next;
-    }
-    private Node getNext()
-    {
-        return this.next;
-    }
-    private void setPrevious(Node previous)
-    {
-        this.previous = previous;
-    }
-    private Node getPrevious()
-    {
-        return this.previous;
-    }
+        private void setNext(Node next) {
+            this.next = next;
+        }
 
-    private Entry[] getEntries()
-    {
-        return Arrays.copyOf(this.entries, this.entryCount);
-    }
+        private Node getNext() {
+            return this.next;
+        }
 
-}
+        private void setPrevious(Node previous) {
+            this.previous = previous;
+        }
+
+        private Node getPrevious() {
+            return this.previous;
+        }
+
+        private Entry[] getEntries() {
+            return Arrays.copyOf(this.entries, this.entryCount);
+        }
+
+    }
 
     private static class Entry // can this be public
     {
@@ -68,17 +64,17 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
             this.val = val;
             this.child = child;
         }
-        private Object getValue()
-        {
+
+        private Object getValue() {
             return this.val;
         }
-        private Comparable getKey()
-        {
+
+        private Comparable getKey() {
             return this.key;
         }
     }
-    public BTreeImpl()
-    {
+
+    public BTreeImpl() {
         this.root = new Node(0);
         this.leftMostExternalNode = this.root;
     }
@@ -86,24 +82,52 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
 
     @Override
     public Value get(Key k) {
-        if (k == null)
-        {
+        if (k == null) {
             throw new IllegalArgumentException("argument to get() is null");
         }
         Entry entry = this.get(this.root, k, this.height);
-        Value v = null;
-        if(entry != null) {
-            if(entry.val instanceof JsonSerializer<?>){ // can i do this
-                try {
-                    v = this.pm.deserialize(k); // when I build DPM it will have try catch so no worries
-                } catch (IOException e) {}
-                put(k, v);
-                return v;
-            }
-            return (Value)entry.val;
+//        Value v = null;
+        if (entry == null) {
+            return null;
         }
-        return null;
+        if (entry.val == null) {
+            if (this.pm != null) {
+                try {
+                    Value v = pm.deserialize(k);
+                    put(k, v);
+                    return v;
+                } catch (IOException e) {}
+            }
+            return null;
+        }
+        return(Value)entry.val;
     }
+//        if(entry != null) {
+//            if (entry.val != null) {
+//                return (Value) entry.val;
+//            } else {
+//                try {
+//                    if (this.pm != null) {
+//                        Value v = pm.deserialize(k);
+//                        this.put(k, v);
+//                        return v;
+//                    }
+//                } catch (IOException e) {
+//                }
+//            }
+//        }
+//        return null;
+////            if(entry.val instanceof JsonSerializer<?>){ // can i do this
+////                try {
+////                    v = this.pm.deserialize(k);
+////                } catch (IOException e) {}
+////                put(k, v);
+////                return v;
+////            }
+////            return (Value)entry.val;
+////        }
+////        return null;
+//    }
 
     private Entry get(Node currentNode, Key key, int height)
     {
@@ -153,24 +177,31 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         Entry alreadyThere = this.get(this.root, k, this.height);
         if(alreadyThere != null) {
             Value valToReturn = (Value) alreadyThere.val;
-            alreadyThere.val = v;
-            if(v == null){
+            //alreadyThere.val = v;
+            if (valToReturn == null) {
                 try {
-                    this.pm.delete(k); // try catch in DPM will fix this
-                } catch (IOException e) {}
-            }
-            if(valToReturn == null){
-                if(this.pm != null){
-                    try{
-                        Value val = this.pm.deserialize(k);
-                    } catch(Exception e){
-                        return null;
+                    if (this.pm != null) {
+                        valToReturn = pm.deserialize(k);
                     }
+                } catch (IOException e) {
                 }
-                return null;
             }
-            return valToReturn; // i think this is what i want to return - old value?
+            alreadyThere.val = v;
+            return valToReturn;
         }
+//            if(valToReturn == null){
+//                if(this.pm != null){
+//                    try{
+//                        Value val = this.pm.deserialize(k);
+//                    } catch(Exception e){
+//                        return null;
+//                    }
+//                }
+//                return null;
+//            }
+//            return valToReturn; // i think this is what i want to return - old value?
+//        }
+
         Node newNode = this.put(this.root, k, v, this.height);
         this.n++;
         if (newNode == null)
@@ -303,7 +334,7 @@ public class BTreeImpl<Key extends Comparable<Key>, Value> implements BTree<Key,
         // serialize the value using the pm
         this.pm.serialize(k, v);
         // put the (now) serialized document back in to the BTree
-        this.put(k, v);
+        this.put(k, null);
     }
 
     @Override
