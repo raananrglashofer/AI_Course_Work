@@ -138,8 +138,9 @@ public class DocumentStoreImpl implements DocumentStore {
     public Document get(URI uri) {
         if(getFromBTree(uri) != null) {
             getFromBTree(uri).setLastUseTime(System.nanoTime());
+            return (Document) this.BTree.get(uri);
         }
-        return (Document) this.BTree.get(uri);
+        return null;
     }
 
     @Override
@@ -148,15 +149,15 @@ public class DocumentStoreImpl implements DocumentStore {
             return false;
         }
         removeFromTrie(uri); // removes all values of Document in the trie
-        DocTemp docTemp = null;
-        for(DocTemp d : docTempMap.values()){
-            if(d.getUri().equals(uri)){
-                docTemp = d;
-            }
-        }
-        DocTemp temp = docTemp;// doing this because temp needs to be "final" and it is not earlier
-        removeFromHeap(temp);
+        DocTemp docTemp = this.docTempMap.get(uri);
+//        for(DocTemp d : docTempMap.values()){
+//            if(d.getUri().equals(uri)){
+//                docTemp = d;
+//            }
+//        }
+//        DocTemp temp = docTemp;// doing this because temp needs to be "final" and it is not earlier
         Document document = getFromBTree(uri);
+        removeFromHeap(docTemp);
         if(document.getDocumentBinaryData() != null) {
             bytesCount -= document.getDocumentBinaryData().length; // double check that deletedDoc works here
         } else{
@@ -167,8 +168,11 @@ public class DocumentStoreImpl implements DocumentStore {
         Function<URI, Boolean> undo = (URI uri1) -> {
             this.BTree.put(uri, deletedDoc);
             addToTrie(uri);
-            addToHeap(temp);
+            addToHeap(docTemp);
             deletedDoc.setLastUseTime(System.nanoTime());
+//            if(wasMaxDocsSet && docTempSet.size() > maxDocsStored){
+//                removeFromEverything();
+//            }
             return true;
         };
         GenericCommand command = new GenericCommand(uri, undo);
@@ -400,7 +404,7 @@ public class DocumentStoreImpl implements DocumentStore {
             this.heap.insert(docTemp);
             docTempSet.add(uri);
             docsCount++;
-            if(wasMaxDocsSet){
+            if(wasMaxDocsSet && this.docTempSet.size() > maxDocsStored){
                 removeFromEverything();
             }
         }
@@ -419,13 +423,20 @@ public class DocumentStoreImpl implements DocumentStore {
     }
 
     private void removeFromHeap(DocTemp docTemp){
-        getFromBTree(docTemp.getUri()).setLastUseTime(System.nanoTime());
+//        while(true){
+//            MinHeapImpl tempHeap = new MinHeapImpl<>();
+//            DocTemp tempDocTemp = this.heap.remove());
+//            if(!tempDocTemp.getUri().equals(docTemp.getUri()){
+//                tempHeap.insert(tempDocTemp);
+//            }
+//            tempHeap.reHeapify(docTemp);
+//        }
+        docTemp.setLastUse(Long.MIN_VALUE);
         this.heap.reHeapify(docTemp);
         this.heap.remove();
         this.docTempSet.remove(docTemp.getUri());
         this.docTempMap.remove(docTemp.getUri());
         docsCount--;
-
     }
     private StackImpl putBackStack(StackImpl temp, StackImpl current){
         while(temp.size() > 0){
