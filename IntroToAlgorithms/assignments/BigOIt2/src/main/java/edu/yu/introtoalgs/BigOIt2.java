@@ -19,20 +19,22 @@ public class BigOIt2 extends BigOIt2Base{
             Stopwatch timer = new Stopwatch();
             algorithm.execute();
             time = timer.elapsedTime();
-            System.out.println("This is the time " + time);
+            //System.out.println("This is the time " + time);
             if(time >= timeOutInMs){
                 return Double.NaN;
             }
             ratioFirstCoupleElements(time); // can't compare until after first three iterations
             if(ratioList.size() > 2){
                 double ratio = time / timeList.get(timeList.size()-1);
-                System.out.println(timeList.get(timeList.size()-1));
-                System.out.println("This is the ratio " + ratio);
+                //System.out.println(timeList.get(timeList.size()-1));
+                //System.out.println("This is the ratio " + ratio);
                 if(compareRatios(ratio)){ // true if ratio stabilized
                     return Math.round(ratio * 10.0) / 10.0;
                 } else{
+                    if(timeList.size() > 3) {
+                        ratioList.add(ratio);
+                    }
                     timeList.add(time);
-                    ratioList.add(time / timeList.get(timeList.size() - 1));
                 }
             }
             time = 0.0;
@@ -78,7 +80,7 @@ public class BigOIt2 extends BigOIt2Base{
             timeList.add(time);
         } else if(ratioList.size() == 2){
             ratioList.add(time / timeList.get(1));
-            timeList.add(time);
+            //timeList.add(time);
         }
     }
 
