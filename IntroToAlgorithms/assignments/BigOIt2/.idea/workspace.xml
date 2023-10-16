@@ -53,8 +53,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BigOlt2Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="BigOlt2Test" />
+    <configuration name="ConstantTimeTest$Constant" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ConstantTimeTest$Constant" />
       <module name="BigOIt2" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -67,6 +67,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="LinearTest$Linear" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="LinearTest$Linear" />
+      <module name="BigOIt2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="LinearTest$Mystery" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="LinearTest$Mystery" />
       <module name="BigOIt2" />
@@ -74,23 +81,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BigOlt2Test.testMysteryAlgorithm" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BigOIt2" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="BigOlt2Test" />
-      <option name="METHOD_NAME" value="testMysteryAlgorithm" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.BigOlt2Test$Mystery" />
-        <item itemvalue="Application.LinearTest$Mystery" />
+        <item itemvalue="Application.LinearTest$Linear" />
+        <item itemvalue="Application.ConstantTimeTest$Constant" />
         <item itemvalue="Application.ConstantTimeTest$Mystery" />
-        <item itemvalue="Application.BigOlt2Test" />
-        <item itemvalue="JUnit.BigOlt2Test.testMysteryAlgorithm" />
+        <item itemvalue="Application.LinearTest$Mystery" />
       </list>
     </recent_temporary>
   </component>

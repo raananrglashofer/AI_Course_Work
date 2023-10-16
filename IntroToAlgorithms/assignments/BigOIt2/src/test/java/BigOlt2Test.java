@@ -15,7 +15,7 @@ public class BigOlt2Test {
 
         @Override
         public void setup(final int n) {
-            //System.out.println("The amount of data is " + n);
+            System.out.println("The amount of data is " + n);
             assert n > 0 : "n must be greater than 0";
             //this.n = n;
             a = new int[n];
@@ -40,13 +40,12 @@ public class BigOlt2Test {
                     }
                 }
             }
-            //System.out.println("The count is " + cnt);
+            System.out.println("The count is " + cnt);
         }
 
         public static void main(String[] args) {
             BigOIt2Base it = new BigOIt2();
 
-            //String bigOMeasurableClassName = "Mystery"; // Replace with the actual class name you want to test
             Mystery mystery = new Mystery();
             long timeOutInMs = 1000000; // Set the timeout value in milliseconds
 

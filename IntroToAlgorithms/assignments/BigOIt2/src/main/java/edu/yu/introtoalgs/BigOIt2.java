@@ -13,7 +13,7 @@ public class BigOIt2 extends BigOIt2Base{
     public double doublingRatio(String bigOMeasurable, long timeOutInMs) {
         BigOMeasurable algorithm = reflexiveAlgorithm(bigOMeasurable);
         double time = 0.0; // variable to keep track of time
-        int n = 10; // starting size variable
+        int n = 100; // starting size variable
         while(true){
             algorithm.setup(n);
             Stopwatch timer = new Stopwatch();
@@ -26,10 +26,11 @@ public class BigOIt2 extends BigOIt2Base{
             ratioFirstCoupleElements(time); // can't compare until after first three iterations
             if(ratioList.size() > 2){
                 double ratio = time / timeList.get(timeList.size()-1);
+                ratio = Math.round(ratio * 10.0) / 10.0;
                 //System.out.println(timeList.get(timeList.size()-1));
                 //System.out.println("This is the ratio " + ratio);
                 if(compareRatios(ratio)){ // true if ratio stabilized
-                    return Math.round(ratio * 10.0) / 10.0;
+                    return ratio; //Math.round(ratio * 10.0) / 10.0;
                 } else{
                     if(timeList.size() > 3) {
                         ratioList.add(ratio);
