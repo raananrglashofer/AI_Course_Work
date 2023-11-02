@@ -24,6 +24,15 @@ public class GridTest {
         // check if null list throws IAE
         words.add(null);
         assertThrows(IllegalArgumentException.class, () -> { WordLayout wl = new WordLayout(10, 10, words);});
+        // check if null word in valid list throws IAE
+        words.remove(null);
+        words.add("HEY");
+        words.add(null);
+        assertThrows(IllegalArgumentException.class, () -> { WordLayout wl = new WordLayout(10, 10, words);});
+        // check if empty word in valid list throws IAE
+        words.remove(null);
+        words.add("");
+        assertThrows(IllegalArgumentException.class, () -> { WordLayout wl = new WordLayout(10, 10, words);});
     }
 
     @ Test
