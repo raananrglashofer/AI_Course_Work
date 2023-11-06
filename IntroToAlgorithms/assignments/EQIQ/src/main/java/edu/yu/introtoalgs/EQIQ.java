@@ -2,9 +2,9 @@ package edu.yu.introtoalgs;
 
 public class EQIQ extends EQIQBase{
     private boolean nepotismSuccess = false;
-    private double EQQuestions;
-    private double IQQuestions;
-    private double seconds;
+    private double EQQuestions = -1;
+    private double IQQuestions = -1;
+    private double seconds = -1;
     /** Constructor: supplies the information needed to solve the EQIQ problem.
      * When the constructor invocation completes successfully, clients invocation
      * of every other API method must return in O(1) time.
@@ -29,7 +29,7 @@ public class EQIQ extends EQIQBase{
         }
         // this is a good check, but program now needs to end
         if(checkIfMaxEQOrIQ(eqSuccessRate,iqSuccessRate, nepotismIndex) == true){
-            return; // i want to close the constructor 
+            return; // i want to close the constructor
         }
 
 
@@ -69,6 +69,20 @@ public class EQIQ extends EQIQBase{
             }
         }
         return false;
+    }
+    // calculates how many seconds ahead nep wins by
+    private void setNumberOfSecondsSuccess(double EQNep, double IQNep, double loserEQ, double loserIQ){
+        if(!this.nepotismSuccess){
+            this.seconds = -1;
+        }
+        // convert hour to seconds
+        double EQNepSeconds = EQNep / 3600;
+        double IQNepSeconds = IQNep / 3600;
+        double loserEQSeconds = loserEQ / 3600;
+        double loserIQSeconds = loserIQ / 3600;
+        double nepScore = (EQNepSeconds * getNumberEQQuestions()) + (IQNepSeconds * getNumberIQQuestions());
+        double loserScore = (loserEQSeconds * getNumberEQQuestions()) + (loserIQSeconds * getNumberIQQuestions());
+        this.seconds = nepScore - loserScore;
     }
 
     // i thought this would be a good check to see if it is the max IQ or EQ
