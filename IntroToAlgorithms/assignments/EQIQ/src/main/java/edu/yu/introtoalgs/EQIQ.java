@@ -78,6 +78,7 @@ public class EQIQ extends EQIQBase {
             }
         }
         binarySearch();
+        //bruteForceSearch();
 //        for (Student s : students) {
 //            System.out.println(s.time);
 //        }
@@ -124,20 +125,37 @@ public class EQIQ extends EQIQBase {
             mid = (floor + ceiling) / 2.0;
 //            System.out.println(mid);
 //            System.out.println(bestMargin);
-            calculateTimes(mid);
+            calculateTimes(floor); // eq questions get love
             Arrays.sort(this.students); //, Comparator.comparingDouble(student -> student.time));
+            double floorMargin = -100000;
+            if(this.students[0].isNep) {
+                floorMargin = this.students[1].time - this.students[0].time;
+            }
+            calculateTimes(ceiling); // iq questions get love
+            Arrays.sort(this.students);
+            double ceilingMargin = -100000;
+            if(this.students[0].isNep) {
+                ceilingMargin = this.students[1].time - this.students[0].time;
+            }
+            if(floorMargin < ceilingMargin){
+                bestMargin = ceilingMargin;
+                floor = mid + .001;
+            } else{
+                bestMargin = floorMargin;
+                ceiling = mid - .001;
+            }
 //            for(Student s : students){
 //                System.out.println(s.time);
 //            }
 //            for (Student s : students) {
 //                System.out.println("Time: " + s.time + ", isNep: " + s.isNep);
 //            }
-            if(this.students[0].isNep && (this.students[1].time - this.students[0].time) > bestMargin){
-                ceiling = mid - .001;
-                bestMargin = this.students[1].time - this.students[0].time;
-            } else {
-                floor = mid + .001;
-            }
+//            if(this.students[0].isNep && (this.students[1].time - this.students[0].time) > bestMargin){
+//                ceiling = mid - .001;
+//                bestMargin = this.students[1].time - this.students[0].time;
+//            } else {
+//                floor = mid + .001;
+//            }
             //System.out.println("Floor: " + floor + ", Ceiling: " + ceiling + ", Mid: " + mid + ", Best Margin: " + bestMargin);
         }
         if (bestMargin <= 0) {
@@ -153,6 +171,41 @@ public class EQIQ extends EQIQBase {
         }
         return bestMargin;
     }
+
+//    private double bruteForceSearch() {
+//        double bestMargin = 0;
+//
+//        for (double mid = 0; mid <= questions; mid += 0.001) {
+//            calculateTimes(mid);
+//            Arrays.sort(this.students);
+//
+//            double currentMargin = -100000;
+//            if (this.students[0].isNep) {
+//                currentMargin = this.students[1].time - this.students[0].time;
+//            }
+//            if(IQQuestions > 1.415){
+//                int i =0;
+//            }
+//            if (currentMargin > bestMargin) {
+//                bestMargin = currentMargin;
+//                this.IQQuestions = mid;
+//                this.EQQuestions = this.questions - mid;
+//            }
+//        }
+//
+//        if (bestMargin <= 0) {
+//            this.nepotismSuccess = false;
+//            this.IQQuestions = -1;
+//            this.EQQuestions = -1;
+//            this.seconds = -1;
+//        } else {
+//            this.nepotismSuccess = true;
+//            this.seconds = bestMargin;
+//        }
+//
+//        return bestMargin;
+//    }
+
 
     private void calculateTimes(double mid) {
         double iqQuestions = mid;
