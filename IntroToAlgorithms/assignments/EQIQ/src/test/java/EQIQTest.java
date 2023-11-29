@@ -45,7 +45,7 @@ public class EQIQTest {
     public void sampleEQIQFavorIQ(){
         double[] eq = new double[2];
         double[] iq = new double[2];
-        int questions = 2;
+        int questions = 20;
         int index = 1;
         eq[0] = 40;
         eq[1] = 40;
@@ -62,7 +62,7 @@ public class EQIQTest {
     public void threePplEQIQFavorEQ(){
         double[] eq = {10, 20, 15};
         double[] iq = {40, 35, 35};
-        int questions = 2;
+        int questions = 20;
         int index = 1;
         EQIQ eqiq = new EQIQ(questions, eq, iq, index);
         System.out.println(eqiq.canNepotismSucceed());
@@ -74,7 +74,7 @@ public class EQIQTest {
     public void threePplEQIQFavorIQ(){
         double[] eq = {40, 35, 35};
         double[] iq = {10, 20, 15};
-        int questions = 2;
+        int questions = 20;
         int index = 1;
         EQIQ eqiq = new EQIQ(questions, eq, iq, index);
         System.out.println(eqiq.canNepotismSucceed());
@@ -100,7 +100,7 @@ public class EQIQTest {
     public void cantWin(){
         double[] eq = {10, 5, 10, 30};
         double[] iq = {50, 60, 35, 10};
-        int questions = 2;
+        int questions = 20;
         int index = 2;
         EQIQ eqiq = new EQIQ(questions, eq, iq, index);
         System.out.println(eqiq.canNepotismSucceed());
@@ -140,6 +140,32 @@ public class EQIQTest {
         double[] iq = {50, 60, 35, 10, 10, 45, 65, 90, 45};
         int questions = 6;
         int index = 5;
+        EQIQ eqiq = new EQIQ(questions, eq, iq, index);
+        System.out.println(eqiq.canNepotismSucceed());
+        System.out.println(eqiq.getNumberIQQuestions());
+        System.out.println(eqiq.getNumberEQQuestions());
+        System.out.println(eqiq.getNumberOfSecondsSuccess());
+    }
+
+    @Test
+    public void nullTest(){
+        double[] eq = {10, 5, 10, 30, 20, 20, 15, 1, 2};
+        double[] iq = {50, 60, 35, 10, 100, 45, 65, 90, 45};
+        int questions = 2;
+        int index = 4;
+        EQIQ eqiq = new EQIQ(questions, eq, iq, index);
+        System.out.println(eqiq.canNepotismSucceed());
+        System.out.println(eqiq.getNumberIQQuestions());
+        System.out.println(eqiq.getNumberEQQuestions());
+        System.out.println(eqiq.getNumberOfSecondsSuccess());
+    }
+
+    @Test
+    public void zeroScoresTest(){
+        double[] eq = {10, 0};
+        double[] iq = {50, 0};
+        int questions = 5;
+        int index = 0;
         EQIQ eqiq = new EQIQ(questions, eq, iq, index);
         System.out.println(eqiq.canNepotismSucceed());
         System.out.println(eqiq.getNumberIQQuestions());
