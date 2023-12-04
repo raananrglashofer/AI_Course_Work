@@ -3,12 +3,17 @@ package edu.yu.introtoalgs;
 import java.util.List;
 
 public class TxSortFJ extends TxSortFJBase{
+    private List<TxBase> transactions;
     /** Constructor.
      *
      * @param transactions a list of transactions, possibly not sorted.
      */
     public TxSortFJ(List<TxBase> transactions) {
         super(transactions);
+        if(transactions == null){
+            throw new IllegalArgumentException();
+        }
+        this.transactions = transactions;
     }
 
     /** Returns an array of transactions, sorted in ascending order of
