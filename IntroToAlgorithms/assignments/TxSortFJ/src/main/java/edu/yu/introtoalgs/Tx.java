@@ -21,9 +21,10 @@ public class Tx extends TxBase {
      */
     public Tx(Account sender, Account receiver, int amount) {
         super(sender, receiver, amount);
-        if (sender == null || receiver == null || amount < 1) {
-            throw new IllegalArgumentException();
-        }
+        // need to figure out how to check if account can be checked to not be null --> currently throwing IAE exception fo rbeing null
+//        if (sender == null || receiver == null || amount < 1) {
+//            throw new IllegalArgumentException();
+//        }
         this.sender = sender;
         this.receiver = receiver;
         this.amount = amount;
@@ -78,6 +79,7 @@ public class Tx extends TxBase {
                 '}';
     }
  // double check if this works and if parameter can be TxBase
+    // might need to use the comparator import
     @Override
     public int compareTo(TxBase other) {
         if (this.time == null && other.time() == null) {
