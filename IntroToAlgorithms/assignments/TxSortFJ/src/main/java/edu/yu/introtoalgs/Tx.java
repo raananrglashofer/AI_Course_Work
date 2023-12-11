@@ -9,6 +9,7 @@ public class Tx extends TxBase {
     private Account receiver;
     private int amount;
     private LocalDateTime time;
+    private long id;
     private static final AtomicLong counter = new AtomicLong(1); // make sure this is allowed and correct
 
     /**
@@ -32,6 +33,7 @@ public class Tx extends TxBase {
         if(this.sender() == null || this.receiver() == null){
             throw new IllegalArgumentException();
         }
+        this.id = counter.getAndIncrement();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class Tx extends TxBase {
      */
     @Override
     public long id() {
-        return counter.getAndIncrement();
+        return this.id;
     }
 
     /**
@@ -95,9 +97,16 @@ public class Tx extends TxBase {
         if (other.time() == null) {
             return 1; // This instance is considered "better" than a null other
         }
-
-        // Compare the LocalDateTime instances
-        return this.time.compareTo(other.time());
+        int temp = this.time.compareTo(other.time());
+        if(temp != 0){
+            return temp;
+        }else{
+            if(this.id() < other.id()){
+                return -1;
+            } else{
+                return 1;
+            }
+        }
     }
 }
 

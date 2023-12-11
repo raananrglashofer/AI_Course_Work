@@ -38,7 +38,7 @@ public class SortTest {
         Tx txNull = new Tx(nullSender, nullReceiver, 10);
         txNull.setTimeToNull();
         transactions.add(txNull);
-        for(int i = 0; i < 10000; i++){
+        for(int i = 0; i < 9000000; i++){
             Account sender = new Account();
             Account receiver = new Account();
             Tx tx = new Tx(sender, receiver, i+1);
@@ -60,10 +60,6 @@ public class SortTest {
 
         // check that it's sorted
         for(int k = 0; k < transactions.size(); k++){
-            if(copy[k] != hopefullySorted[k]){
-                System.out.println(copy[k]);
-                System.out.println(hopefullySorted[k]);
-            }
             Assert.assertEquals(copy[k], hopefullySorted[k]);
         }
     }
