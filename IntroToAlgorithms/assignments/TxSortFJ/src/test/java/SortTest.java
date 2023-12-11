@@ -4,8 +4,6 @@ import edu.yu.introtoalgs.TxSortFJ;
 import edu.yu.introtoalgs.TxSortFJBase;
 import edu.yu.introtoalgs.Account;
 import org.junit.Test;
-import java.util.Random;
-import org.testng.asserts.SoftAssert;
 import org.junit.Assert;
 
 import java.time.LocalDateTime;
@@ -31,14 +29,19 @@ public class SortTest {
         }
     }
     @Test
-    // threshold right now is 10000 then gets wonky
+    // threshold right now is 1000 then gets wonky
     public void checkIfSortedSimple(){
         List<TxBase> transactions = new ArrayList<>();
         // create transactions
-        for(int i = 0; i < 3; i++){
+        Account nullSender = new Account();
+        Account nullReceiver = new Account();
+        Tx txNull = new Tx(nullSender, nullReceiver, 10);
+        txNull.setTimeToNull();
+        transactions.add(txNull);
+        for(int i = 0; i < 10000; i++){
             Account sender = new Account();
             Account receiver = new Account();
-            Tx tx = new Tx(sender, receiver, i);
+            Tx tx = new Tx(sender, receiver, i+1);
             transactions.add(tx);
         }
         // create a copy to compare against
@@ -57,18 +60,22 @@ public class SortTest {
 
         // check that it's sorted
         for(int k = 0; k < transactions.size(); k++){
+            if(copy[k] != hopefullySorted[k]){
+                System.out.println(copy[k]);
+                System.out.println(hopefullySorted[k]);
+            }
             Assert.assertEquals(copy[k], hopefullySorted[k]);
         }
     }
 
     @Test
-    public void checkIfFasterThanJDKSmall(){
+    public void checkIfFasterThanJDKNineMil(){
         List<TxBase> transactions = new ArrayList<>();
         // create transactions
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 9000000; i++){
             Account sender = new Account();
             Account receiver = new Account();
-            Tx tx = new Tx(sender, receiver, i);
+            Tx tx = new Tx(sender, receiver, i+1);
             transactions.add(tx);
         }
         // rearrange transactions
@@ -91,46 +98,50 @@ public class SortTest {
         // time FJ sort
         Stopwatch fjTimer = new Stopwatch();
         TxBase[] hopefullySorted = fj.sort();
-        double FJTime = JDKTimer.elapsedTime();
+        double FJTime = fjTimer.elapsedTime();
 
-        System.out.println(FJTime);
-        System.out.println(JDKTime);
+        System.out.println("FJ Time: " + FJTime);
+        System.out.println("JDK Time: " + JDKTime);
 
         // check that FJ sort is faster than mergeSort
         Assert.assertTrue(FJTime < JDKTime);
     }
-//    @Test
-//    public void doesItSort(){
-//        final SoftAssert softAssert = new SoftAssert();
-//        final int nAccounts = 2 ;
-//        final int nTxs = 5 ;
-//        final List <TxBase> txs = new ArrayList <>() ;
-//        final Account [ ] accounts = new Account [ nAccounts ] ;
-//        for ( int i =0; i<nAccounts ; i ++) {
-//            accounts [ i ] = new Account ( ) ;
-//        }
-//        for ( int i =0; i<nTxs ; i ++) {
-//// being silly here: no point in making this look more real
-//            Random random = new Random();
-//            final Account account1 = accounts [random.nextInt (0 , nAccounts ) ] ;
-//            final Account account2 = accounts [random.nextInt (0 , nAccounts ) ] ;
-//            txs.add ( new Tx ( account1 , account2 , 1 ) ) ;
-//        }
-//        Collections.shuffle(txs) ;
-//        try {
-//            final TxSortFJBase txSortFJ = new TxSortFJ ( txs ) ;
-//            final TxBase [ ] fjTxs = txSortFJ.sort ( ) ;
-//            final boolean isSorted = isSorted(fjTxs) ;
-//            softAssert.assertTrue( isSorted ,
-//                    "*** Txs should have been (but are not) sorted" )
-//            ;
-//        }
-//        catch ( Exception e ) {
-//            final String msg = "Unexpected exception running test: " ;
-//            softAssert.fail(msg+e.toString( ) ) ;
-//        }
-//        finally {
-//            softAssert.assertAll( "demo" ) ;
-//        }
-//    }
+    @Test
+    public void isMineFasterThanArraysParallelSort(){
+        List<TxBase> transactions = new ArrayList<>();
+        // create transactions
+        for(int i = 0; i < 9000000; i++){
+            Account sender = new Account();
+            Account receiver = new Account();
+            Tx tx = new Tx(sender, receiver, i+1);
+            transactions.add(tx);
+        }
+        // rearrange transactions
+        Collections.shuffle(transactions);
+
+        // create a copy of the rearranged transactions
+        TxBase[] copy = new TxBase[transactions.size()];
+        int j = 0;
+        for(TxBase tx : transactions){
+            copy[j] = tx;
+            j++;
+        }
+        // time Parallel sort
+        Stopwatch ParallelTimer = new Stopwatch();
+        Arrays.parallelSort(copy);
+        double ParallelTime = ParallelTimer.elapsedTime();
+
+        TxSortFJ fj = new TxSortFJ(transactions);
+
+        // time FJ sort
+        Stopwatch fjTimer = new Stopwatch();
+        TxBase[] hopefullySorted = fj.sort();
+        double FJTime = fjTimer.elapsedTime();
+
+        System.out.println("FJ Time: " + FJTime);
+        System.out.println("Parallel Time: " + ParallelTime);
+
+        // check that FJ sort is faster than parallelSort
+        Assert.assertTrue(FJTime < ParallelTime);
+    }
 }
