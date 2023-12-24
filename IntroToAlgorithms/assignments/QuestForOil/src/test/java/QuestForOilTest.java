@@ -5,7 +5,18 @@ import static org.junit.Assert.assertThrows;
 import org.junit.Test;
 import org.junit.Assert;
 import edu.yu.introtoalgs.QuestForOil;
+import edu.yu.introtoalgs.QuestForOilBase;
 public class QuestForOilTest {
+    private static class Stopwatch {
+        private final long start;
+        private Stopwatch() {
+            start = System.nanoTime();
+        }
+        private double elapsedTime() {
+            long now = System.nanoTime();
+            return (now - start) / 1000000.0;
+        }
+    }
     @Test
     // should throw IAE when map is null
     public void checkIfMapNull(){
@@ -67,6 +78,10 @@ public class QuestForOilTest {
                 {'S', 'S', 'U', 'S', 'U', 'U'}
         };
         QuestForOil quest = new QuestForOil(map);
-        assertEquals(20, quest.nContiguous(0,1));
+        Stopwatch timer = new Stopwatch();
+        int contiguous = quest.nContiguous(0,1);
+        double time = timer.elapsedTime();
+        assertEquals(20, contiguous);
+        System.out.println("Time: " + time);
     }
 }
