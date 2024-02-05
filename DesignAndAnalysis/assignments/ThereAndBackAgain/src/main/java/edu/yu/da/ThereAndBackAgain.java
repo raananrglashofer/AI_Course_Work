@@ -1,75 +1,44 @@
 package edu.yu.da;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.*;
 
-public class ThereAndBackAgain extends ThereAndBackAgainBase{
-    private String startVertex;
+public class ThereAndBackAgain extends ThereAndBackAgainBase {
+    private final String startVertex;
     private String goalVertex = null;
     private double goalCost = 0.0;
     private List<String> oneLargestPath = new ArrayList<>(); // this means it will be null correct?
     private List<String> otherLargestPath = new ArrayList<>();
     private boolean doItCalled = false;
-    private EdgeWeightedGraph graph; // I think client would initialize it
+    private EdgeWeightedGraph graph;
+    private HashMap<String, Double> distances;
 
-    /** Constructor which supplies the start vertex
+    private class VertexInfo {
+        String vertex;
+        double distance;
+        List<String> path;
+
+        public VertexInfo(String vertex, double distance, List<String> path) {
+            this.vertex = vertex;
+            this.distance = distance;
+            this.path = path;
+        }
+    }
+
+    /**
+     * Constructor which supplies the start vertex
      *
      * @param startVertex, length must be > 0.
      * @throws IllegalArgumentException if the pre-condiitions are
-     * violated
+     *                                  violated
      */
-    public ThereAndBackAgain(String startVertex){
+    public ThereAndBackAgain(String startVertex) {
         super(startVertex);
-        if(startVertex.length() < 1){
+        if (startVertex.length() < 1) {
             throw new IllegalArgumentException();
         }
         this.startVertex = startVertex;
-
+        this.graph = new EdgeWeightedGraph(startVertex); // this adds the startVertex for all intents and purposes
     }
-    // chatGPT
-    private class EdgeWeightedGraph {
-
-        private final int V; // Number of vertices
-        private int E; // Number of edges
-        private Map<Integer, List<Edge>> adjacencyList; // Adjacency list representation
-        private Set<Edge> allEdges; // Set of all edges in the graph
-
-        // Edge class representing a weighted edge
-        private static class Edge { // can/should this be static
-            private final String v; // Vertex on one end
-            private final String w; // Vertex on the other end
-            private final double weight; // Weight of the edge
-
-            public Edge(String v, String w, double weight) {
-                this.v = v;
-                this.w = w;
-                this.weight = weight;
-            }
-
-            @Override
-            public String toString() {
-                return String.format("%d-%d %.2f", v, w, weight);
-            }
-        }
-        // no edges are added to the graph yet
-        // Constructor
-        public EdgeWeightedGraph(int V) {
-            if (V < 0) throw new IllegalArgumentException("Number of vertices must be non-negative");
-            this.V = V;
-            this.E = 0;
-            this.adjacencyList = new HashMap<>();
-            this.allEdges = new HashSet<>();
-
-            // Initialize adjacency list
-            for (int v = 0; v < V; v++) {
-                adjacencyList.put(v, new ArrayList<>());
-            }
-        }
-    }
-
-
 
     /** Adds a weighted undirected edge between vertex v and vertex w.  The two
      * vertices must differ from one another, and an edge between the two
@@ -89,11 +58,17 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase{
         if(v.length() < 1 || w.length() < 1 || weight < 0){
             throw new IllegalArgumentException();
         }
-        // check if fits the requirements to be added as an edge
-        EdgeWeightedGraph.Edge edge = new EdgeWeightedGraph.Edge(v, w, weight);
-        if(!v.equals(w)){
-            this.graph.allEdges.add(edge); // don't need to check if set has the edge because set.add() will do it for me
+        Edge edge = new Edge(v, w, weight);
+        if(this.graph.getEdges().size() > 1){
+            for(Edge e : this.graph.edges()){
+                if(e.equals(edge)){ //
+                    return; // edge already exists
+                }
+            }
         }
+        this.graph.addVertex(v); // if already there then not go through method
+        this.graph.addVertex(w);
+        this.graph.addEdge(edge);
     }
 
     /** Client informs implementation that the graph is fully constructed and
@@ -107,12 +82,109 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase{
      */
 
     // so this is basically a setter for the rest of the methods
+    // dijkstra baby
     @Override
     public void doIt() {
         if(this.doItCalled){
             throw new IllegalStateException();
         }
         this.doItCalled = true;
+        if(this.graph.getEdges().size() == 0){
+            return;
+        }
+        Map<String,List<List<String>>> shortestPaths = dijkstra(this.graph, this.startVertex);
+        // take map info and iterate over to set all the getters or see if no valid path
+        // Also needs to check if fits requirements for valid path
+
+        // filtering it to only be valid paths
+        List<String> validPaths = new ArrayList<>();
+        for(Map.Entry<String, List<List<String>>> entry : shortestPaths.entrySet()){
+            if(isValidPath(entry)){
+                validPaths.add(entry.getKey());
+            }
+        }
+        // if no valid paths just end it
+        if(validPaths.size() == 0){
+            return;
+        }
+        // determine the largest path
+        double maxDistance = 0;
+        String goalVertex = null;
+        for(String vertex : validPaths){
+            if(this.distances.get(vertex) > maxDistance){
+                maxDistance = this.distances.get(vertex);
+                goalVertex = vertex;
+            }
+        }
+        this.goalVertex = goalVertex;
+        this.goalCost = maxDistance;
+        this.oneLargestPath = shortestPaths.get(goalVertex).get(0);
+        this.otherLargestPath = shortestPaths.get(goalVertex).get(1);
+
+    }
+
+    private boolean isValidPath(Map.Entry<String, List<List<String>>> entry){
+        boolean isValid = false;
+        if(entry.getValue().size() > 1){ // can potentially go there and back
+            List<String> pathOne = entry.getValue().get(0);
+            List<String> pathTwo = entry.getValue().get(1);
+            // this isn't perfect because not checking if there are more than 2 paths and potentially 3rd is different
+            // but I think multiple paths shouldn't get here then
+            if(!pathOne.equals(pathTwo)){ // paths are not the same
+                if(pathOne.size() == pathTwo.size()){
+                    isValid = true;
+                }
+            }
+        }
+        return isValid;
+    }
+
+    private Map<String,List<List<String>>> dijkstra(EdgeWeightedGraph graph, String sourceVertex){
+        this.distances = new HashMap<>();
+        Map<String, List<List<String>>> paths = new HashMap<>();
+        PriorityQueue<VertexInfo> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(v -> v.distance));
+
+        for (String vertex : graph.getVertices()) {
+            distances.put(vertex, Double.POSITIVE_INFINITY);
+            paths.put(vertex, new ArrayList<>());
+        }
+
+        distances.put(startVertex, 0.0);
+        priorityQueue.add(new VertexInfo(startVertex, 0.0, new ArrayList<>()));
+
+        while(!priorityQueue.isEmpty()) {
+            VertexInfo currentVertexInfo = priorityQueue.poll();
+            String u = currentVertexInfo.vertex;
+            double currentDistance = currentVertexInfo.distance;
+            List<String> currentPath = currentVertexInfo.path;
+
+            for (Edge edge : graph.adj(u)) { // double check this loop
+                String v = edge.other(u);
+                double edgeWeight = edge.weight();
+                double newDistance = currentDistance + edgeWeight;
+
+                if (newDistance == distances.get(v)) {
+                    // Add the path from u to v to the list of paths for v
+                    List<String> newPath = new ArrayList<>(currentPath);
+                    if(newPath.size() == 0) {
+                        newPath.add(u);
+                    }
+                    newPath.add(v);
+                    paths.get(v).add(newPath);
+                } else if (newDistance < distances.get(v)) {
+                    // Update distance, clear the list of paths, and add the new path
+                    distances.put(v, newDistance);
+                    List<String> newPath = new ArrayList<>(currentPath);
+                    if(newPath.size() == 0) {
+                        newPath.add(u);
+                    }
+                    newPath.add(v);
+                    paths.put(v, new ArrayList<>(Collections.singletonList(newPath)));
+                    priorityQueue.add(new VertexInfo(v, newDistance, newPath));
+                }
+            }
+        }
+        return paths;
     }
 
     /** If the graph contains a "goal vertex of the longest valid path" (as
@@ -123,6 +195,9 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase{
      */
     @Override
     public String goalVertex() {
+        if(!this.doItCalled){
+            throw new IllegalStateException();
+        }
         return this.goalVertex;
     }
 
@@ -134,6 +209,9 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase{
      */
     @Override
     public double goalCost() {
+        if(!this.doItCalled){
+            throw new IllegalStateException();
+        }
         return this.goalCost;
     }
 
@@ -150,6 +228,9 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase{
      */
     @Override
     public List<String> getOneLongestPath() {
+        if(!this.doItCalled){
+            throw new IllegalStateException();
+        }
         if(this.oneLargestPath == null){
             return Collections.emptyList();
         }
@@ -169,6 +250,9 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase{
      */
     @Override
     public List<String> getOtherLongestPath() {
+        if(!this.doItCalled){
+            throw new IllegalStateException();
+        }
         if(this.otherLargestPath == null){
             return Collections.emptyList();
         }
