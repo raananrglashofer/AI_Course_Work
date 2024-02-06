@@ -80,8 +80,8 @@ public class ThereAndBackAgainTests {
         secondList.add("a");
         secondList.add("b");
         secondList.add("d");
-        assertEquals(taba.getOneLongestPath(), firstList);
-        assertEquals(taba.getOtherLongestPath(), secondList);
+        assertEquals(taba.getOneLongestPath(), secondList);
+        assertEquals(taba.getOtherLongestPath(), firstList);
     }
 
     @Test
@@ -151,9 +151,8 @@ public class ThereAndBackAgainTests {
         secondList.add("a");
         secondList.add("d");
         secondList.add("g");
-        // My intuition thought that a,d,g would be the first path, not a,e,g
-        assertEquals(taba.getOneLongestPath(), firstList);
-        assertEquals(taba.getOtherLongestPath(), secondList);
+        assertEquals(taba.getOneLongestPath(), secondList);
+        assertEquals(taba.getOtherLongestPath(), firstList);
     }
 
     @Test

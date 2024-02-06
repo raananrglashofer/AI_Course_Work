@@ -121,8 +121,13 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase {
         }
         this.goalVertex = goalVertex;
         this.goalCost = maxDistance;
-        this.oneLargestPath = shortestPaths.get(goalVertex).get(0);
-        this.otherLargestPath = shortestPaths.get(goalVertex).get(1);
+        if(shortestPaths.get(goalVertex).get(0).hashCode() > shortestPaths.get(goalVertex).get(1).hashCode()){
+            this.oneLargestPath = shortestPaths.get(goalVertex).get(1);
+            this.otherLargestPath = shortestPaths.get(goalVertex).get(0);
+        } else{
+            this.oneLargestPath = shortestPaths.get(goalVertex).get(0);
+            this.otherLargestPath = shortestPaths.get(goalVertex).get(1);
+        }
 
     }
 
