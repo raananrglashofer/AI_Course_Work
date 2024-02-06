@@ -155,4 +155,65 @@ public class ThereAndBackAgainTests {
         assertEquals(taba.getOneLongestPath(), firstList);
         assertEquals(taba.getOtherLongestPath(), secondList);
     }
+
+    @Test
+    public void reallyBigRandomGraph(){
+        String startVertex = "a";
+        ThereAndBackAgain taba = new ThereAndBackAgain(startVertex);
+        taba.addEdge(startVertex, "b", 1.0);
+        taba.addEdge(startVertex, "c", 1.0);
+        taba.addEdge(startVertex, "d", 1.0);
+        taba.addEdge("b", "f", 2.0);
+        taba.addEdge("c", "f", 4.0);
+        taba.addEdge("b", "c", 11.0);
+        taba.addEdge("d", "e", 5.0);
+        taba.addEdge("a", "e", 10.0);
+        taba.addEdge("e", "f", 9.0);
+        taba.addEdge("e", "g", 3.0);
+        taba.addEdge("g", "h", 7.0);
+        taba.addEdge("g", "i", 4.0);
+        taba.addEdge("f", "h", 19.0);
+        taba.addEdge("f", "j", 8.0);
+        taba.addEdge("j", "h", 8.0);
+        taba.addEdge("e", "i", 1.0);
+        taba.addEdge("c", "e", 5.0);
+        taba.doIt();
+        System.out.println(taba.goalVertex());
+        System.out.println(taba.goalCost());
+        System.out.println(taba.getOneLongestPath());
+        System.out.println(taba.getOtherLongestPath());
+    }
+
+//    @Test
+//    public void reallyBigRandomGraphGPT() {
+//        int numVertices = 15000;
+//        String startVertex = "a";
+//        ThereAndBackAgain taba = new ThereAndBackAgain(startVertex);
+//
+//        // Adding 10,000 vertices
+//        for (int i = 1; i < numVertices; i++) {
+//            char vertexLabel = (char) ('a' + i);
+//            String vertex = String.valueOf(vertexLabel);
+//            taba.addEdge(startVertex, vertex, Math.random() * 10 + 1); // Random weight between 1 and 10
+//        }
+//
+//        // Adding random edges between all vertices
+//        for (int j = 0; j < 100000; j++) {
+//            Random random = new Random();
+//            String firstVertex = taba.graph.getVertices().stream().toList().get(random.nextInt(taba.graph.getVertices().size()));
+//            String secondVertex = taba.graph.getVertices().stream().toList().get(random.nextInt(taba.graph.getVertices().size()));
+//
+//            if (!firstVertex.equals(secondVertex)) {
+//                    taba.addEdge(firstVertex, secondVertex, Math.random() * 10 + 1);
+//                }
+//            }
+//
+//        taba.doIt();
+//
+//        // Print or assert the result as needed
+//        System.out.println("Goal Vertex: " + taba.goalVertex());
+//        System.out.println("Goal Cost: " + taba.goalCost());
+//        System.out.println("One Longest Path: " + taba.getOneLongestPath());
+//        System.out.println("Other Longest Path: " + taba.getOtherLongestPath());
+//    }
 }

@@ -9,7 +9,7 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase {
     private List<String> oneLargestPath = new ArrayList<>(); // this means it will be null correct?
     private List<String> otherLargestPath = new ArrayList<>();
     private boolean doItCalled = false;
-    private EdgeWeightedGraph graph;
+    private EdgeWeightedGraph graph; // go back to private after testing
     private HashMap<String, Double> distances;
 
     private class VertexInfo {
@@ -57,6 +57,9 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase {
         }
         if(v.length() < 1 || w.length() < 1 || weight < 0){
             throw new IllegalArgumentException();
+        }
+        if(v.equals(w)){
+            return; // they are the same edges
         }
         Edge edge = new Edge(v, w, weight);
         if(this.graph.getEdges().size() > 1){
