@@ -55,17 +55,14 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase {
         if(this.doItCalled){
             throw new IllegalStateException();
         }
-        if(v.length() < 1 || w.length() < 1 || weight < 0){
+        if(v.length() < 1 || w.length() < 1 || weight < 0 || v.equals(w)){
             throw new IllegalArgumentException();
-        }
-        if(v.equals(w)){
-            return; // they are the same edges
         }
         Edge edge = new Edge(v, w, weight);
         if(this.graph.getEdges().size() > 1){
             for(Edge e : this.graph.edges()){
                 if(e.equals(edge)){ //
-                    return; // edge already exists
+                    throw new IllegalArgumentException(); // edge already exists
                 }
             }
         }
