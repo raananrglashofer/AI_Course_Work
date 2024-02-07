@@ -182,37 +182,4 @@ public class ThereAndBackAgainTests {
         System.out.println(taba.getOneLongestPath());
         System.out.println(taba.getOtherLongestPath());
     }
-
-//    @Test
-//    public void reallyBigRandomGraphGPT() {
-//        int numVertices = 15000;
-//        String startVertex = "a";
-//        ThereAndBackAgain taba = new ThereAndBackAgain(startVertex);
-//
-//        // Adding 10,000 vertices
-//        for (int i = 1; i < numVertices; i++) {
-//            char vertexLabel = (char) ('a' + i);
-//            String vertex = String.valueOf(vertexLabel);
-//            taba.addEdge(startVertex, vertex, Math.random() * 10 + 1); // Random weight between 1 and 10
-//        }
-//
-//        // Adding random edges between all vertices
-//        for (int j = 0; j < 100000; j++) {
-//            Random random = new Random();
-//            String firstVertex = taba.graph.getVertices().stream().toList().get(random.nextInt(taba.graph.getVertices().size()));
-//            String secondVertex = taba.graph.getVertices().stream().toList().get(random.nextInt(taba.graph.getVertices().size()));
-//
-//            if (!firstVertex.equals(secondVertex)) {
-//                    taba.addEdge(firstVertex, secondVertex, Math.random() * 10 + 1);
-//                }
-//            }
-//
-//        taba.doIt();
-//
-//        // Print or assert the result as needed
-//        System.out.println("Goal Vertex: " + taba.goalVertex());
-//        System.out.println("Goal Cost: " + taba.goalCost());
-//        System.out.println("One Longest Path: " + taba.getOneLongestPath());
-//        System.out.println("Other Longest Path: " + taba.getOtherLongestPath());
-//    }
 }
