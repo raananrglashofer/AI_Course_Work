@@ -2,8 +2,8 @@ package edu.yu.da;
 // https://algs4.cs.princeton.edu/44sp/DirectedEdge.java.html
 
 public class DirectedEdge {
-    private final int v;
-    private final int w;
+    private final String v;
+    private final String w;
     private final double weight;
 
     /**
@@ -17,9 +17,9 @@ public class DirectedEdge {
      *                                  is a negative integer
      * @throws IllegalArgumentException if {@code weight} is {@code NaN}
      */
-    public DirectedEdge(int v, int w, double weight) {
-        if (v < 0) throw new IllegalArgumentException("Vertex names must be non-negative integers");
-        if (w < 0) throw new IllegalArgumentException("Vertex names must be non-negative integers");
+    public DirectedEdge(String v, String w, double weight) {
+        if (v.length() < 1) throw new IllegalArgumentException("Vertex names must be non-negative integers");
+        if (w.length() < 1) throw new IllegalArgumentException("Vertex names must be non-negative integers");
         if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
         this.v = v;
         this.w = w;
@@ -31,7 +31,7 @@ public class DirectedEdge {
      *
      * @return the tail vertex of the directed edge
      */
-    public int from() {
+    public String from() {
         return v;
     }
 
@@ -40,7 +40,7 @@ public class DirectedEdge {
      *
      * @return the head vertex of the directed edge
      */
-    public int to() {
+    public String to() {
         return w;
     }
 

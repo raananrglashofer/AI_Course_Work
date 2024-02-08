@@ -1,28 +1,52 @@
 package edu.yu.da;
 
+import java.util.HashMap;
+import java.util.HashSet;
+// https://algs4.cs.princeton.edu/44sp/EdgeWeightedDigraph.java.html
 public class EdgeWeightedDigraph {
     // going to have to make similar changes to this API like I did for ThereAndBackAgain
     private static final String NEWLINE = System.getProperty("line.separator");
 
-    private final int V;                // number of vertices in this digraph
-    private int E;                      // number of edges in this digraph
+    private int V = 0;  // number of vertices in this digraph
+    private int E = 0;  // number of edges in this digraph
     private Bag<DirectedEdge>[] adj;    // adj[v] = adjacency list for vertex v
     private int[] indegree;             // indegree[v] = indegree of vertex v
+    private HashMap<String, Integer> vertexIndices = new HashMap<>();
+    private HashSet<String> vertices = new HashSet<>();
+    private HashSet<String> edges = new HashSet<>();
 
     /**
      * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
      *
-     * @param V the number of vertices
+     * //@param V the number of vertices
      * @throws IllegalArgumentException if {@code V < 0}
      */
-    public EdgeWeightedDigraph(int V) {
-        if (V < 0) throw new IllegalArgumentException("Number of vertices in a Digraph must be non-negative");
-        this.V = V;
-        this.E = 0;
-        this.indegree = new int[V];
-        adj = (Bag<DirectedEdge>[]) new Bag[V];
-        for (int v = 0; v < V; v++)
-            adj[v] = new Bag<DirectedEdge>();
+    public EdgeWeightedDigraph(String v) {
+        if (v.length() < 0){
+            throw new IllegalArgumentException("Number of vertices in a Digraph must be non-negative");
+        }
+        this.vertexIndices.put(v, 0);
+        this.vertices.add(v);
+        this.indegree = new int[1];
+        this.adj = (Bag<DirectedEdge>[]) new Bag[1];
+        this.V++;
+    }
+
+    public void addVertex(String vertex) {
+        if (!vertexIndices.containsKey(vertex)) {
+            vertexIndices.put(vertex, V);
+            this.vertices.add(vertex);
+            Bag<DirectedEdge>[] newAdj = (Bag<DirectedEdge>[]) new Bag[V+1];
+            int[] newIndegree = new int[V+1];
+            for (int v = 0; v < V; v++) {
+                indegree[v] = newIndegree[v];
+                newAdj[v] = adj[v];
+            }
+            newAdj[V] = new Bag<DirectedEdge>(); // i don't think this line is neccesary
+            adj = newAdj;
+            this.indegree = newIndegree; // really got to double check this indegree[]
+            V++; // increase count after vertex added
+        }
     }
 
     /**
@@ -44,9 +68,10 @@ public class EdgeWeightedDigraph {
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
-    private void validateVertex(int v) {
-        if (v < 0 || v >= V)
-            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V - 1));
+    private void validateVertex(String v) {
+        if (v.length() < 0 || !vertexIndices.containsKey(v)) {
+            throw new IllegalArgumentException("Invalid Vertex");
+        }
     }
 
     /**
@@ -57,12 +82,15 @@ public class EdgeWeightedDigraph {
      *                                  and {@code V-1}
      */
     public void addEdge(DirectedEdge e) {
-        int v = e.from();
-        int w = e.to();
+        String v = e.from();
+        String w = e.to();
         validateVertex(v);
         validateVertex(w);
-        adj[v].add(e);
-        indegree[w]++;
+        if (adj[vertexIndices.get(v)] == null) {
+            adj[vertexIndices.get(v)] = new Bag<DirectedEdge>();
+        }
+        adj[vertexIndices.get(v)].add(e);
+        indegree[vertexIndices.get(w)]++;
         E++;
     }
 
@@ -74,9 +102,9 @@ public class EdgeWeightedDigraph {
      * @return the directed edges incident from vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedEdge> adj(int v) {
+    public Iterable<DirectedEdge> adj(String v) {
         validateVertex(v);
-        return adj[v];
+        return adj[vertexIndices.get(v)];
     }
 
     /**
@@ -87,9 +115,9 @@ public class EdgeWeightedDigraph {
      * @return the outdegree of vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public int outdegree(int v) {
+    public int outdegree(String v) {
         validateVertex(v);
-        return adj[v].size();
+        return adj[vertexIndices.get(v)].size();
     }
 
     /**
@@ -100,9 +128,9 @@ public class EdgeWeightedDigraph {
      * @return the indegree of vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public int indegree(int v) {
+    public int indegree(String v) {
         validateVertex(v);
-        return indegree[v];
+        return indegree[vertexIndices.get(v)];
     }
 
     /**
@@ -114,8 +142,8 @@ public class EdgeWeightedDigraph {
      */
     public Iterable<DirectedEdge> edges() {
         Bag<DirectedEdge> list = new Bag<DirectedEdge>();
-        for (int v = 0; v < V; v++) {
-            for (DirectedEdge e : adj(v)) {
+        for (String vertex : vertexIndices.keySet()) {
+            for (DirectedEdge e : adj(vertex)) {
                 list.add(e);
             }
         }

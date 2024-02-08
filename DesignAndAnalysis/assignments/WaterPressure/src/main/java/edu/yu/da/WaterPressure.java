@@ -1,22 +1,11 @@
 package edu.yu.da;
 import java.util.*;
 public class WaterPressure extends WaterPressureBase{
-    private String initialInputPump; // probs best to make a pump class
+    private final String initialInputPump; // probs best to make a pump class
     private String secondInputPump;
     private boolean minAmountCalled = false;
-    //private Set<Channel> channels = new HashSet<>();
     private Set<String> vertices = new HashSet<>();
-    private Set<EdgeWeightedDigraph> digraph;
-//    private class Channel{
-//        private String from;
-//        private String to;
-//        private double weight;
-//        private Channel(String from, String to, double weight){
-//            this.from = from;
-//            this.to = to;
-//            this.weight = weight;
-//        }
-//    }
+    private EdgeWeightedDigraph digraph;
 
     /** Constructor which supplies the initial input pump.
      *
@@ -29,7 +18,8 @@ public class WaterPressure extends WaterPressureBase{
             throw new IllegalArgumentException();
         }
         this.initialInputPump = initialInputPump;
-       // this.digraph = new EdgeWeightedDigraph(initialInputPump);
+        this.vertices.add(initialInputPump);
+        this.digraph = new EdgeWeightedDigraph(initialInputPump);
     }
 
     /** Adds a second input pump, differing from the initial input pump, to the
@@ -44,7 +34,7 @@ public class WaterPressure extends WaterPressureBase{
      */
     @Override
     public void addSecondInputPump(String secondInputPump) {
-        if(secondInputPump.length() < 1){
+        if(secondInputPump.length() < 1 || this.initialInputPump.equals(secondInputPump) || !this.vertices.contains(secondInputPump)){
             throw new IllegalArgumentException();
         }
         this.secondInputPump = secondInputPump;
@@ -64,15 +54,29 @@ public class WaterPressure extends WaterPressureBase{
      * @throws IllegalStateException if minAmount() has previously been invoked.
      * @throws IllegalArgumentException if the other pre-conditions are violated.
      */
+    // this method is the same as last assignment
+    // so once grades are out make sure no mistakes were made here
     @Override
     public void addBlockage(String v, String w, double blockage) {
-        // still need to check if channel already exists
-        if(v.length() < 1 || w.length() < 1 || blockage <= 0 || v.equals(w)){
-            throw new IllegalArgumentException();
-        }
         if(this.minAmountCalled){
             throw new IllegalStateException();
         }
+        if(v.length() < 1 || w.length() < 1 || blockage <= 0 || v.equals(w)){
+            throw new IllegalArgumentException();
+        }
+        DirectedEdge edge = new DirectedEdge(v, w, blockage);
+        if(this.digraph.E() > 1){
+            for(DirectedEdge e : this.digraph.edges()){
+                if(e.equals(edge)){ //
+                    throw new IllegalArgumentException(); // edge already exists
+                }
+            }
+        }
+        this.vertices.add(v); // set will add if not in it
+        this.vertices.add(w);
+        this.digraph.addVertex(v); // if already there then not go through method
+        this.digraph.addVertex(w);
+        this.digraph.addEdge(edge);
 
     }
 
