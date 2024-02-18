@@ -2,6 +2,7 @@ package edu.yu.da;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.*;
 // https://algs4.cs.princeton.edu/44sp/EdgeWeightedDigraph.java.html
 public class EdgeWeightedDigraph {
     // going to have to make similar changes to this API like I did for ThereAndBackAgain
@@ -13,7 +14,7 @@ public class EdgeWeightedDigraph {
     private int[] indegree;             // indegree[v] = indegree of vertex v
     private HashMap<String, Integer> vertexIndices = new HashMap<>();
     private HashSet<String> vertices = new HashSet<>();
-    private HashSet<String> edges = new HashSet<>();
+    private HashSet<DirectedEdge> edges = new HashSet<>();
 
     /**
      * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
@@ -92,6 +93,7 @@ public class EdgeWeightedDigraph {
         adj[vertexIndices.get(v)].add(e);
         indegree[vertexIndices.get(w)]++;
         E++;
+        this.edges.add(e);
     }
 
 
@@ -104,6 +106,9 @@ public class EdgeWeightedDigraph {
      */
     public Iterable<DirectedEdge> adj(String v) {
         validateVertex(v);
+        if(adj[vertexIndices.get(v)] == null){
+            adj[vertexIndices.get(v)] = new Bag<DirectedEdge>();
+        }
         return adj[vertexIndices.get(v)];
     }
 
@@ -117,6 +122,9 @@ public class EdgeWeightedDigraph {
      */
     public int outdegree(String v) {
         validateVertex(v);
+        if(adj[vertexIndices.get(v)] == null){
+            adj[vertexIndices.get(v)] = new Bag<DirectedEdge>();
+        }
         return adj[vertexIndices.get(v)].size();
     }
 
@@ -130,6 +138,9 @@ public class EdgeWeightedDigraph {
      */
     public int indegree(String v) {
         validateVertex(v);
+        if(adj[vertexIndices.get(v)] == null){
+            adj[vertexIndices.get(v)] = new Bag<DirectedEdge>();
+        }
         return indegree[vertexIndices.get(v)];
     }
 
@@ -143,7 +154,7 @@ public class EdgeWeightedDigraph {
     public Iterable<DirectedEdge> edges() {
         Bag<DirectedEdge> list = new Bag<DirectedEdge>();
         for (String vertex : vertexIndices.keySet()) {
-            for (DirectedEdge e : adj(vertex)) {
+            for (DirectedEdge e : adj(vertex)) { // needs to be reviewed
                 list.add(e);
             }
         }
@@ -156,16 +167,25 @@ public class EdgeWeightedDigraph {
      * @return the number of vertices <em>V</em>, followed by the number of edges <em>E</em>,
      * followed by the <em>V</em> adjacency lists of edges
      */
-    public String toString() {
-        StringBuilder s = new StringBuilder();
-        s.append(V + " " + E + NEWLINE);
-        for (int v = 0; v < V; v++) {
-            s.append(v + ": ");
-            for (DirectedEdge e : adj[v]) {
-                s.append(e + "  ");
-            }
-            s.append(NEWLINE);
-        }
-        return s.toString();
+//    public String toString() {
+//        StringBuilder s = new StringBuilder();
+//        s.append(V + " " + E + NEWLINE);
+//        for (int v = 0; v < V; v++) {
+//            s.append(v + ": ");
+//            for (DirectedEdge e : adj[v]) {
+//                s.append(e + "  ");
+//            }
+//            s.append(NEWLINE);
+//        }
+//        return s.toString();
+//    }
+
+    public Set<String> getVertices(){
+        return this.vertices;
     }
+
+    public Set<DirectedEdge> getEdges(){
+        return this.edges;
+    }
+
 }

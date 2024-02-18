@@ -4,8 +4,21 @@ public class WaterPressure extends WaterPressureBase{
     private final String initialInputPump; // probs best to make a pump class
     private String secondInputPump;
     private boolean minAmountCalled = false;
+    private boolean secondPumpAdded = false;
     private Set<String> vertices = new HashSet<>();
+    private HashMap<String, Vertex> vertexMap = new HashMap<>();
     private EdgeWeightedDigraph digraph;
+    private double primFromFirst = -1.0;
+    private double primFromSecond = -1.0;
+    private boolean areAllTouched = false;
+    private class Vertex{ // I will figure out where to implement this guy
+        private String v;
+        private boolean touched; // has the vertex been touched when running minAmount() on the graph at either call
+        public Vertex(String v){
+            this.v = v;
+            this.touched = false;
+        }
+    }
 
     /** Constructor which supplies the initial input pump.
      *
@@ -37,7 +50,12 @@ public class WaterPressure extends WaterPressureBase{
         if(secondInputPump.length() < 1 || this.initialInputPump.equals(secondInputPump) || !this.vertices.contains(secondInputPump)){
             throw new IllegalArgumentException();
         }
+        if(this.secondPumpAdded){
+            throw new IllegalStateException();
+        }
         this.secondInputPump = secondInputPump;
+        this.secondPumpAdded = true;
+        this.minAmountCalled = false;
     }
 
     /** Specifies a blockage on a channel running from pump station v to pump
@@ -66,7 +84,7 @@ public class WaterPressure extends WaterPressureBase{
         }
         DirectedEdge edge = new DirectedEdge(v, w, blockage);
         if(this.digraph.E() > 1){
-            for(DirectedEdge e : this.digraph.edges()){
+            for(DirectedEdge e : this.digraph.edges()){ // need to do null checks in this method in EdgeWeightedDGraph class or here
                 if(e.equals(edge)){ //
                     throw new IllegalArgumentException(); // edge already exists
                 }
@@ -93,8 +111,101 @@ public class WaterPressure extends WaterPressureBase{
      * input pump stations can get water to all the pump stations, returns -1.0
      * as as sentinel value.
      */
+
+    // not returning total cost of path
+    // really going to return largest edge weight
     @Override
     public double minAmount() {
-        return -1.0;
+        if(this.minAmountCalled){
+            throw new IllegalStateException(); // double check this
+        }
+        this.minAmountCalled = true;
+        // no channels in the system
+        if(this.digraph.getEdges().size() == 0){  //ask what should be  --> check piazza
+            return 0.0;
+        }
+        // one channel in the system, but both pumps are input pumps
+        if(this.vertices.size() == 2 && secondPumpAdded){
+            return 0.0;
+        }
+        double minAmount;
+        if(!secondPumpAdded){
+            prim(this.digraph, this.initialInputPump);
+            minAmount = this.primFromFirst;
+        } else{
+            prim(this.digraph, this.secondInputPump);
+            if(areAllTouched && this.primFromFirst < this.primFromSecond){ //|| this.primFromSecond == -1.0)){
+                minAmount = this.primFromFirst;
+            } else{
+                minAmount = this.primFromSecond;
+            }
+        }
+        allVerticesTouched();
+        if(!areAllTouched){
+            minAmount = -1.0;
+        }
+        return minAmount;
+    }
+
+    private void prim(EdgeWeightedDigraph digraph, String startVertex){
+        PriorityQueue<DirectedEdge> minHeap = new PriorityQueue<>(Comparator.comparingDouble(DirectedEdge::weight));
+        Set<String> mstVertices = new HashSet<>();
+        double largestEdge = -1.0;
+
+        // my only issue with this is that it will overwrite the vertices when secondInput is called
+        // probably best to move it to add blockage
+        // this check might provide a solution to the above problem
+        if(!this.secondPumpAdded) {
+            for (String vertex : digraph.getVertices()) {
+                this.vertexMap.put(vertex, new Vertex(vertex)); // none of them are touched now
+            }
+        }
+        if(secondPumpAdded){
+            mstVertices.add(this.initialInputPump);
+            mstVertices.add(startVertex);
+            this.vertexMap.get(this.initialInputPump).touched = true;
+            this.vertexMap.get(startVertex).touched = true;
+        } else {
+            // add initial input pump
+            mstVertices.add(startVertex);
+            this.vertexMap.get(startVertex).touched = true;
+        }
+
+        while(mstVertices.size() < digraph.getVertices().size()){
+            for(String vertex : mstVertices){
+                Iterable<DirectedEdge> neighbors = digraph.adj(vertex); // null check please
+                for(DirectedEdge edge : neighbors){
+                    if(!mstVertices.contains(edge.to())){
+                        minHeap.offer(edge);
+                    }
+                }
+            }
+
+            if(!minHeap.isEmpty()){
+                DirectedEdge minEdge = minHeap.poll();
+                String toVertex = minEdge.to();
+
+                mstVertices.add(toVertex);
+                largestEdge = Math.max(largestEdge, minEdge.weight());
+                    this.vertexMap.get(toVertex).touched = true;
+            } else{
+                // graph is not connected
+                break;
+            }
+        }
+        if(!secondPumpAdded){
+            this.primFromFirst = largestEdge;
+        } else{
+            this.primFromSecond = largestEdge;
+        }
+    }
+
+    private void allVerticesTouched(){
+         this.areAllTouched = true;
+        for(Vertex v : vertexMap.values()){
+            if(!v.touched){
+                this.areAllTouched = false;
+            }
+        }
     }
 }
