@@ -11,6 +11,7 @@ public class WaterPressure extends WaterPressureBase{
     private double primFromFirst = -1.0;
     private double primFromSecond = -1.0;
     private boolean areAllTouched = false;
+    private boolean addedToMap = false;
     private class Vertex{ // I will figure out where to implement this guy
         private String v;
         private boolean touched; // has the vertex been touched when running minAmount() on the graph at either call
@@ -83,7 +84,7 @@ public class WaterPressure extends WaterPressureBase{
             throw new IllegalArgumentException();
         }
         DirectedEdge edge = new DirectedEdge(v, w, blockage);
-        if(this.digraph.E() > 1){
+        if(this.digraph.E() > 0){
             for(DirectedEdge e : this.digraph.edges()){ // need to do null checks in this method in EdgeWeightedDGraph class or here
                 if(e.equals(edge)){ //
                     throw new IllegalArgumentException(); // edge already exists
@@ -155,10 +156,8 @@ public class WaterPressure extends WaterPressureBase{
         // my only issue with this is that it will overwrite the vertices when secondInput is called
         // probably best to move it to add blockage
         // this check might provide a solution to the above problem
-        if(!this.secondPumpAdded) {
-            for (String vertex : digraph.getVertices()) {
-                this.vertexMap.put(vertex, new Vertex(vertex)); // none of them are touched now
-            }
+        if(!addedToMap) {
+            addToMap();
         }
         if(secondPumpAdded){
             mstVertices.add(this.initialInputPump);
@@ -187,7 +186,7 @@ public class WaterPressure extends WaterPressureBase{
 
                 mstVertices.add(toVertex);
                 largestEdge = Math.max(largestEdge, minEdge.weight());
-                    this.vertexMap.get(toVertex).touched = true;
+                this.vertexMap.get(toVertex).touched = true;
             } else{
                 // graph is not connected
                 break;
@@ -201,11 +200,18 @@ public class WaterPressure extends WaterPressureBase{
     }
 
     private void allVerticesTouched(){
-         this.areAllTouched = true;
+        this.areAllTouched = true;
         for(Vertex v : vertexMap.values()){
             if(!v.touched){
                 this.areAllTouched = false;
             }
         }
+    }
+
+    private void addToMap(){
+        for (String vertex : digraph.getVertices()) {
+            this.vertexMap.put(vertex, new Vertex(vertex)); // none of them are touched now
+        }
+        this.addedToMap = true;
     }
 }

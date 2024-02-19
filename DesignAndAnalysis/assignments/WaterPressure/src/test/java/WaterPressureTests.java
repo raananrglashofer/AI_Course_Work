@@ -155,10 +155,10 @@ public class WaterPressureTests {
     public void secondPumpNoChange(){
         WaterPressure wp = new WaterPressure("A");
         wp.addBlockage("A", "B", 2.0);
-        wp.addBlockage("B", "C", 2.0);
+        wp.addBlockage("B", "C", 3.0);
         wp.addBlockage("C", "D", 2.0);
         double firstMinAmount = wp.minAmount();
-        assertTrue(firstMinAmount == 2.0);
+        assertTrue(firstMinAmount ==3.0);
         wp.addSecondInputPump("D");
         double secondMinAmount = wp.minAmount();
         System.out.println(secondMinAmount);

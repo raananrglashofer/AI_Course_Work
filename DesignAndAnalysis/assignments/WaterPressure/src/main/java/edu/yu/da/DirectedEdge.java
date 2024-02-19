@@ -61,4 +61,26 @@ public class DirectedEdge {
     public String toString() {
         return v + "->" + w + " " + String.format("%5.2f", weight);
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+
+        if(obj == null || getClass() != obj.getClass()){
+            return false;
+        }
+
+        DirectedEdge otherEdge = (DirectedEdge) obj;
+        return (v.equals(otherEdge.v) && w.equals(otherEdge.w));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = v.hashCode() + w.hashCode();
+        long temp = Double.doubleToLongBits(weight);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
