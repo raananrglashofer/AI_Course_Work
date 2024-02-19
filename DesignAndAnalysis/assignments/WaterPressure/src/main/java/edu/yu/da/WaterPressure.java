@@ -55,7 +55,7 @@ public class WaterPressure extends WaterPressureBase{
         }
         this.secondInputPump = secondInputPump;
         this.secondPumpAdded = true;
-        this.minAmountCalled = false;
+        //this.minAmountCalled = false;
     }
 
     /** Specifies a blockage on a channel running from pump station v to pump
@@ -116,12 +116,12 @@ public class WaterPressure extends WaterPressureBase{
     // really going to return largest edge weight
     @Override
     public double minAmount() {
-        if(this.minAmountCalled){
-            throw new IllegalStateException(); // double check this
-        }
+//        if(this.minAmountCalled){
+//            throw new IllegalStateException();
+//        }
         this.minAmountCalled = true;
         // no channels in the system
-        if(this.digraph.getEdges().size() == 0){  //ask what should be  --> check piazza
+        if(this.digraph.getEdges().size() == 0){
             return 0.0;
         }
         // one channel in the system, but both pumps are input pumps

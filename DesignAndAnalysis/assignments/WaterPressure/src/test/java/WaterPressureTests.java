@@ -28,10 +28,8 @@ public class WaterPressureTests {
         });
         // call method after calling minAmount() without adding a second pump
         wp.addBlockage("B", "A", 2.0);
+        wp.addBlockage("B", "C", 2.0);
         wp.minAmount();
-        assertThrows(IllegalStateException.class, () -> {
-            wp.addBlockage("A", "", 2);
-        });
         assertThrows(IllegalStateException.class, () -> {
             wp.addBlockage("A", "", 2);
         });
@@ -41,11 +39,13 @@ public class WaterPressureTests {
         });
         // add secondPump that isn't in set of vertices
         assertThrows(IllegalArgumentException.class, () -> {
-            wp.addSecondInputPump("C");
+            wp.addSecondInputPump("D");
         });
         // try to add multiple second pumps
         wp.addSecondInputPump("B");
-        wp.addBlockage("B", "C", 2.0);
+        assertThrows(IllegalStateException.class, () -> {
+            wp.addBlockage("B", "D", 2.0);
+        });
         assertThrows(IllegalStateException.class, () -> {
             wp.addSecondInputPump("C");
         });
