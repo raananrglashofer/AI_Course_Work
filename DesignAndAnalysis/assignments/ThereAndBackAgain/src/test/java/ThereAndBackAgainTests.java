@@ -182,4 +182,62 @@ public class ThereAndBackAgainTests {
         System.out.println(taba.getOneLongestPath());
         System.out.println(taba.getOtherLongestPath());
     }
+
+    @Test
+    public void microGoalVertexExists3(){
+        String startVertex = "A";
+        ThereAndBackAgain TABA = new ThereAndBackAgain(startVertex);
+        TABA.addEdge("S", "A", 6.0);
+        TABA.addEdge("S", "B", 5.0);
+        TABA.addEdge("S", "G", 1.0);
+        TABA.addEdge("A", "B", 2.0);
+        TABA.addEdge("A", "D", 7.0);
+        TABA.addEdge("B", "C", 7.0);
+        TABA.addEdge("B", "D", 8.0);
+        TABA.addEdge("B", "G", 2.0);
+        TABA.addEdge("C", "E", 5.0);
+        TABA.addEdge("E", "F", 3.0);
+        TABA.addEdge("E", "G", 4.0);
+        TABA.addEdge("F", "G", 7.0);
+        TABA.doIt();
+        System.out.println(TABA.goalVertex());
+        System.out.println(TABA.goalCost());
+        System.out.println(TABA.getOneLongestPath());
+        System.out.println(TABA.getOtherLongestPath());
+    }
+
+    @Test
+    public void nanoGoalVertexExists(){
+        String startVertex = "A";
+        ThereAndBackAgain TABA = new ThereAndBackAgain(startVertex);
+        TABA.addEdge("A", "C", 1.0);
+        TABA.addEdge("A", "B", 2.0);
+        TABA.addEdge("C", "B", 1.0);
+        TABA.doIt();
+        System.out.println(TABA.goalVertex());
+        System.out.println(TABA.goalCost());
+        System.out.println(TABA.getOneLongestPath());
+        System.out.println(TABA.getOtherLongestPath());
+    }
+
+    @Test
+    public void startVertexNotConnectedToGraph(){
+        String startVertex = "A";
+        ThereAndBackAgain TABA = new ThereAndBackAgain(startVertex);
+        TABA.addEdge("D", "B", 1.0);
+        TABA.addEdge("B", "C", 1.0);
+        TABA.doIt();
+        System.out.println(TABA.goalVertex());
+        System.out.println(TABA.goalCost());
+        System.out.println(TABA.getOneLongestPath());
+        System.out.println(TABA.getOtherLongestPath());
+    }
 }
+
+
+
+
+
+
+
+

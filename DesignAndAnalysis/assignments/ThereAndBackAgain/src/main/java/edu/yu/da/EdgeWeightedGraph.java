@@ -114,6 +114,11 @@ public class EdgeWeightedGraph {
     public Iterable<Edge> edges() {
         Bag<Edge> list = new Bag<Edge>();
         for (String vertex : vertexIndices.keySet()) {
+            if(adj(vertex) == null){
+                System.out.println(vertex + " has null adj(vertex)");
+                System.out.println(adj(vertex) + " is null");
+                System.out.println(adj[vertexIndices.get(vertex)] + " should have written with this syntax (adj[vertexIndices.get(vertex)])");
+            }
             int selfLoops = 0;
             for (Edge e : adj(vertex)) {  // Use get method to obtain the index
                 String otherVertex = e.other(vertex);

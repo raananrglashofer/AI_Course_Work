@@ -136,7 +136,7 @@ public class ThereAndBackAgain extends ThereAndBackAgainBase {
             // this isn't perfect because not checking if there are more than 2 paths and potentially 3rd is different
             // but I think multiple paths shouldn't get here then
             if(!pathOne.equals(pathTwo)){ // paths are not the same
-                if(pathOne.size() == pathTwo.size()){
+               if(pathOne.size() == pathTwo.size()){
                     isValid = true;
                 }
             }

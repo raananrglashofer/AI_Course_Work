@@ -188,4 +188,8 @@ public class EdgeWeightedDigraph {
         return this.edges;
     }
 
+    public int getVertexIndex(String vertex){
+        return this.vertexIndices.get(vertex);
+    }
+
 }
