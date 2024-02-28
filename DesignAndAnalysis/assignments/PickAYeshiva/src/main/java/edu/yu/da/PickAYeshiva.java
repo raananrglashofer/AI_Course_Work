@@ -4,7 +4,9 @@ import java.util.*;
 public class PickAYeshiva extends PickAYeshivaBase{
     private double[] facultyRatioRankings;
     private double[] cookingRatioRankings;
-    private class Yeshiva{
+    private List<Yeshiva> allYeshivas = new ArrayList<>();
+    private List<Yeshiva> validYeshivaChoices = new ArrayList<>();
+    private class Yeshiva{      // implements Comparable<Yeshiva>
         private double facultyRanking;
         private double cookingRanking;
         private int index;
@@ -23,8 +25,8 @@ public class PickAYeshiva extends PickAYeshivaBase{
                 return false;
             }
 
-            Yeshiva otherYesiva = (Yeshiva) obj;
-            return (facultyRanking == otherYesiva.facultyRanking && cookingRanking == otherYesiva.cookingRanking);
+            Yeshiva otherYeshiva = (Yeshiva) obj;
+            return (facultyRanking == otherYeshiva.facultyRanking && cookingRanking == otherYeshiva.cookingRanking);
         }
 
         @Override
@@ -55,10 +57,56 @@ public class PickAYeshiva extends PickAYeshivaBase{
         if(facultyRatioRankings == null || cookingRankings == null || facultyRatioRankings.length != cookingRankings.length){
             throw new IllegalArgumentException();
         }
-
-        // sub-classed implementation may want to add code here
+        // make all Yeshivas
+        for(int i = 0; i < facultyRatioRankings.length; i++){
+            Yeshiva yeshiva = new Yeshiva(facultyRatioRankings[i], cookingRankings[i], i);
+            this.allYeshivas.add(yeshiva);
+        }
+        Comparator<Yeshiva> comparator = new Comparator<>() {
+            // sorts by faculty ranking and then tiebreaker is cooking ranker
+            // sorts in descending order
+            @Override
+            public int compare(Yeshiva y1, Yeshiva y2) {
+                if(y1.facultyRanking == y2.facultyRanking){
+                    if(y1.cookingRanking > y2.cookingRanking){
+                        return -1;
+                    } else{
+                        return 1;
+                    }
+                }
+                if(y1.facultyRanking > y2.facultyRanking){
+                    return -1;
+                } else{
+                    return 1;
+                }
+            }
+        };
+        Collections.sort(this.allYeshivas, comparator);
+        Yeshiva yeshiva = allYeshivas.get(0); // best faculty yeshiva
+        this.validYeshivaChoices.add(yeshiva);
+        for(int j = 1; j < allYeshivas.size(); j++){
+            if(yeshiva.cookingRanking <= allYeshivas.get(j).cookingRanking){
+                checkAgainstOtherYeshivas(allYeshivas.get(j));
+            }
+        }
+        // put scores in arrays
+        this.facultyRatioRankings = new double[validYeshivaChoices.size()];
+        this.cookingRatioRankings = new double[validYeshivaChoices.size()];
+        for(int k = 0; k < validYeshivaChoices.size(); k++){
+            this.facultyRatioRankings[k] = validYeshivaChoices.get(k).facultyRanking;
+            this.cookingRatioRankings[k] = validYeshivaChoices.get(k).cookingRanking;
+        }
     }
 
+    private void checkAgainstOtherYeshivas(Yeshiva yeshiva){
+        for(Yeshiva yesh : this.validYeshivaChoices){
+            if(yeshiva.facultyRanking <= yesh.facultyRanking && yeshiva.cookingRanking <= yesh.cookingRanking){
+                return; // there is a yeshiva that beats it
+            }
+        }
+        // if not beaten then it's valid
+        this.validYeshivaChoices.add(yeshiva);
+    }
     /** Returns an array of yeshiva faculty ranking ratio values that MUST be
      * evaluated (along with the yeshiva's cooking rankings) to make the best
      * "which yeshiva to attend" decision.
@@ -84,6 +132,6 @@ public class PickAYeshiva extends PickAYeshivaBase{
     // *
     @Override
     public double[] getCookingRankings() {
-        return this.facultyRatioRankings;
+        return this.cookingRatioRankings;
     }
 }
