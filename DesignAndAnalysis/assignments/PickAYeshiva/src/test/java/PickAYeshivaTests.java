@@ -57,10 +57,14 @@ public class PickAYeshivaTests {
     public void randomMediumTest(){
         double [] facultyRatioRankings = {1, 4, 3, 5, 7, 10, 3, 8, 6, 11, 9, 2, 3, 15, 1};
         double [] cookingRankings = {2, 6, 2, 5, 9, 4, 12, 7, 6, 4, 9, 2, 1, 1, 20};
-        PickAYeshivaBase pay = new PickAYeshiva ( facultyRatioRankings , cookingRankings );
+        PickAYeshivaBase pay = new PickAYeshiva (facultyRatioRankings , cookingRankings);
         // Yeshivas 7, 10, 11, 14, 15 are all valid options
         double [] facultyAnswer = {15, 11, 9, 3, 1}; // ordered the way it comes
         double [] cookingAnswer = {1, 4, 9, 12, 20}; // ordered the way it comes
+        for(int i = 0; i < pay.getCookingRankings().length; i++){
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
+            System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+        }
         assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), facultyAnswer));
         assertTrue(Arrays.equals(pay.getCookingRankings(), cookingAnswer));
     }
@@ -71,8 +75,8 @@ public class PickAYeshivaTests {
         double[] faculty = new double[100000];
         double[] cooking = new double[100000];
         for(int i = 0; i < faculty.length; i++){
-            faculty[i] = i;
-            cooking[i] = faculty.length - i;
+            faculty[i] = faculty.length - i;
+            cooking[i] = i;
         }
         long bruteForceStart = System.nanoTime();
         // might need to add more meat to this
@@ -94,8 +98,24 @@ public class PickAYeshivaTests {
         assertEquals(faculty.length, pay.getFacultyRatioRankings().length);
         assertEquals(cooking.length, pay.getCookingRankings().length);
         // algorithm beats brute force implementation
-        System.out.println("Brute Force Time: " + bruteForceTime);
-        System.out.println("Algorithm Time: " + payTime);
+        System.out.println("Brute Force Time: " + bruteForceTime / 1000000000.0 + "seconds");
+        System.out.println("Algorithm Time: " + payTime / 1000000000.0 + "seconds");
         assertTrue(bruteForceTime > payTime);
+    }
+
+    @Test
+    public void yeshivaTest(){
+        double[] faculty = {5,5};
+        double[] cooking = {6,7};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {5};
+        double[] answerCooking = {7};
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
+
     }
 }

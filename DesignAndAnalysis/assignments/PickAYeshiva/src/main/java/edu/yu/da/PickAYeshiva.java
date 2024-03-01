@@ -82,13 +82,19 @@ public class PickAYeshiva extends PickAYeshivaBase{
             }
         };
         Collections.sort(this.allYeshivas, comparator);
-        Yeshiva yeshiva = allYeshivas.get(0); // best faculty yeshiva
-        this.validYeshivaChoices.add(yeshiva);
-        for(int j = 1; j < allYeshivas.size(); j++){
-            if(yeshiva.cookingRanking <= allYeshivas.get(j).cookingRanking){
-                checkAgainstOtherYeshivas(allYeshivas.get(j));
+        mergeSort(this.allYeshivas);
+        for(int i = 0; i < facultyRatioRankings.length; i++){
+            if(this.allYeshivas.get(i) != null){
+                this.validYeshivaChoices.add(this.allYeshivas.get(i));
             }
         }
+//        Yeshiva yeshiva = allYeshivas.get(0); // best faculty yeshiva
+//        this.validYeshivaChoices.add(yeshiva);
+//        for(int j = 1; j < allYeshivas.size(); j++){
+//            if(yeshiva.cookingRanking <= allYeshivas.get(j).cookingRanking){
+//                checkAgainstOtherYeshivas(allYeshivas.get(j));
+//            }
+//        }
         // put scores in arrays
         this.facultyRatioRankings = new double[validYeshivaChoices.size()];
         this.cookingRatioRankings = new double[validYeshivaChoices.size()];
@@ -98,15 +104,66 @@ public class PickAYeshiva extends PickAYeshivaBase{
         }
     }
 
-    private void checkAgainstOtherYeshivas(Yeshiva yeshiva){
-        for(Yeshiva yesh : this.validYeshivaChoices){
-            if(yeshiva.facultyRanking <= yesh.facultyRanking && yeshiva.cookingRanking <= yesh.cookingRanking){
-                return; // there is a yeshiva that beats it
+    public List<Yeshiva> mergeSort(List<Yeshiva> yeshivas) {
+        if (yeshivas == null || yeshivas.size() <= 1) { // might delete
+            return yeshivas; // Already sorted
+        }
+
+        int middle = yeshivas.size() / 2;
+        List<Yeshiva> left = new ArrayList<>(yeshivas.subList(0, middle));
+        List<Yeshiva> right = new ArrayList<>(yeshivas.subList(middle, yeshivas.size()));
+
+        // Recursive calls for left and right halves
+        left = mergeSort(left);
+        right = mergeSort(right);
+
+        // Merge the sorted halves
+        return merge(left, right);
+    }
+
+    private List<Yeshiva> merge(List<Yeshiva> left, List<Yeshiva> right) {
+        List<Yeshiva> merged = new ArrayList<>();
+        int i = 0, j = 0;
+
+        while (i < left.size() && j < right.size()) {
+            if(left.get(i) == null){
+                System.out.println("here");
+                //i++;
+            }
+//            System.out.println("Yeshiva #" + left.get(i).index + " Cooking Score: " + left.get(i).cookingRanking);
+//            System.out.println("Yeshiva #" + right.get(j).index + " Cooking Score: " + right.get(j).cookingRanking);
+            if ((left.get(i).facultyRanking == right.get(i).facultyRanking && left.get(i).cookingRanking < right.get(j).cookingRanking)
+                    || (left.get(i).facultyRanking != right.get(i).facultyRanking && left.get(i).cookingRanking <= right.get(j).cookingRanking)) {
+                merged.add(left.get(i++));
+            } else {
+                merged.add(null); // Set smaller element to null
+                j++;
             }
         }
-        // if not beaten then it's valid
-        this.validYeshivaChoices.add(yeshiva);
+
+        // Set remaining elements of left list to null, if any
+        while (i < left.size()) {
+            merged.add(null);
+            i++;
+        }
+
+        // Copy remaining elements of right list, if any
+        while (j < right.size()) {
+            merged.add(right.get(j++));
+        }
+
+        return merged;
     }
+
+//    private void checkAgainstOtherYeshivas(Yeshiva yeshiva){
+//        for(Yeshiva yesh : this.validYeshivaChoices){
+//            if(yeshiva.facultyRanking <= yesh.facultyRanking && yeshiva.cookingRanking <= yesh.cookingRanking){
+//                return; // there is a yeshiva that beats it
+//            }
+//        }
+//        // if not beaten then it's valid
+//        this.validYeshivaChoices.add(yeshiva);
+//    }
     /** Returns an array of yeshiva faculty ranking ratio values that MUST be
      * evaluated (along with the yeshiva's cooking rankings) to make the best
      * "which yeshiva to attend" decision.
