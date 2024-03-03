@@ -62,11 +62,29 @@ public class PickAYeshivaTests {
         double [] facultyAnswer = {15, 11, 9, 3, 1}; // ordered the way it comes
         double [] cookingAnswer = {1, 4, 9, 12, 20}; // ordered the way it comes
         for(int i = 0; i < pay.getCookingRankings().length; i++){
-            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
             System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
         }
         assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), facultyAnswer));
         assertTrue(Arrays.equals(pay.getCookingRankings(), cookingAnswer));
+    }
+
+    @Test
+    public void leffTimeTest(){
+        // should take roughly 20 seconds
+        double[] faculty = new double[25000000];
+        double[] cooking = new double[25000000];
+        for(int i = 0; i < faculty.length; i++){
+            faculty[i] = (Math.random() * (faculty.length - 1) + 1);
+            cooking[i] = (Math.random() * (faculty.length - 1) + 1);
+        }
+
+        long payStart = System.nanoTime();
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+        long payEnd = System.nanoTime();
+        long payTime = payEnd - payStart;
+        System.out.println("Algorithm Time: " + payTime / 1000000000.0 + "seconds");
+        assertTrue((payTime / 1000000000.0) <= 20.0);
     }
 
     @Test
@@ -116,8 +134,8 @@ public class PickAYeshivaTests {
         double[] answerCooking = {7};
 
         for(int i = 0; i < pay.getCookingRankings().length; i++){
-            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
             System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
         }
 
         assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
@@ -138,11 +156,80 @@ public class PickAYeshivaTests {
         double[] answerCooking = {6, 7};
 
         for(int i = 0; i < pay.getCookingRankings().length; i++){
-            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
             System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
         }
         assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
         assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
 
+    }
+
+    @Test
+    public void aLittleLessSimpleTest(){
+        double[] faculty = {5, 4, 2, 8, 9};
+        double[] cooking = {6, 7, 2, 1, 2};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {9, 5, 4};
+        double[] answerCooking = {2, 6, 7};
+
+        for(int i = 0; i < pay.getCookingRankings().length; i++){
+            System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
+        }
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
+
+    }
+
+    @Test
+    public void randomNumbersFromTheFellasExceptNadiv(){
+        double[] faculty = {69, 666, 99, 114, 91, 11, 18, 62, 1000, 1114};
+        double[] cooking = {420, 18, 34, 82, 64, 79, 44, 68, 114, 7};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {1114, 1000, 69};
+        double[] answerCooking = {7, 114, 420};
+
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
+    }
+
+    @Test
+    public void sameFacultyScore(){
+        double[] faculty = {6, 6, 6, 6, 6};
+        double[] cooking = {2, 5, 7, 3, 8};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {6};
+        double[] answerCooking = {8};
+
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
+    }
+
+    @Test
+    public void sameCookingScore(){
+        double[] faculty = {2, 5, 7, 3, 8};
+        double[] cooking = {6, 6, 6, 6, 6};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {8};
+        double[] answerCooking = {6};
+
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
     }
 }

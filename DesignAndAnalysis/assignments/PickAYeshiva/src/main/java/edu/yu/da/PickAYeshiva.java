@@ -127,7 +127,11 @@ public class PickAYeshiva extends PickAYeshivaBase{
         int i = 0, j = 0;
 
         while (i < left.size() && j < right.size()) {
-            if (left.get(i) != null && (right.get(j) == null || left.get(i).cookingRanking < right.get(j).cookingRanking)) {
+            if(left.get(i) == null){
+                i++;
+            } else if(right.get(j) == null){
+                j++;
+            } else if (left.get(i).cookingRanking < right.get(j).cookingRanking) {
                 merged.add(left.get(i++));
             } else {
                 merged.add(null); // Set smaller element to null
