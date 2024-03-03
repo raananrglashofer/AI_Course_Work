@@ -114,6 +114,33 @@ public class PickAYeshivaTests {
         double[] newCooking = pay.getCookingRankings();
         double[] answerFaculty = {5};
         double[] answerCooking = {7};
+
+        for(int i = 0; i < pay.getCookingRankings().length; i++){
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
+            System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+        }
+
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
+
+    }
+
+    @Test
+    public void verySimpleTest(){
+        double[] faculty = {5, 4, 2};
+        double[] cooking = {6, 7, 2};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {5, 4};
+        double[] answerCooking = {6, 7};
+
+        for(int i = 0; i < pay.getCookingRankings().length; i++){
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
+            System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+        }
         assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
         assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
 

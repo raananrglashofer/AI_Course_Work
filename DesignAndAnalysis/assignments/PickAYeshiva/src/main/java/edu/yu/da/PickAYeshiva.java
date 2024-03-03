@@ -82,10 +82,10 @@ public class PickAYeshiva extends PickAYeshivaBase{
             }
         };
         Collections.sort(this.allYeshivas, comparator);
-        mergeSort(this.allYeshivas);
-        for(int i = 0; i < facultyRatioRankings.length; i++){
-            if(this.allYeshivas.get(i) != null){
-                this.validYeshivaChoices.add(this.allYeshivas.get(i));
+        List<Yeshiva> sortedList = mergeSort(this.allYeshivas);
+        for(int i = 0; i < sortedList.size(); i++){
+            if(sortedList.get(i) != null){
+                this.validYeshivaChoices.add(sortedList.get(i));
             }
         }
 //        Yeshiva yeshiva = allYeshivas.get(0); // best faculty yeshiva
@@ -104,7 +104,7 @@ public class PickAYeshiva extends PickAYeshivaBase{
         }
     }
 
-    public List<Yeshiva> mergeSort(List<Yeshiva> yeshivas) {
+    private List<Yeshiva> mergeSort(List<Yeshiva> yeshivas) {
         if (yeshivas == null || yeshivas.size() <= 1) { // might delete
             return yeshivas; // Already sorted
         }
@@ -121,19 +121,13 @@ public class PickAYeshiva extends PickAYeshivaBase{
         return merge(left, right);
     }
 
+
     private List<Yeshiva> merge(List<Yeshiva> left, List<Yeshiva> right) {
         List<Yeshiva> merged = new ArrayList<>();
         int i = 0, j = 0;
 
         while (i < left.size() && j < right.size()) {
-            if(left.get(i) == null){
-                System.out.println("here");
-                //i++;
-            }
-//            System.out.println("Yeshiva #" + left.get(i).index + " Cooking Score: " + left.get(i).cookingRanking);
-//            System.out.println("Yeshiva #" + right.get(j).index + " Cooking Score: " + right.get(j).cookingRanking);
-            if ((left.get(i).facultyRanking == right.get(i).facultyRanking && left.get(i).cookingRanking < right.get(j).cookingRanking)
-                    || (left.get(i).facultyRanking != right.get(i).facultyRanking && left.get(i).cookingRanking <= right.get(j).cookingRanking)) {
+            if (left.get(i) != null && (right.get(j) == null || left.get(i).cookingRanking < right.get(j).cookingRanking)) {
                 merged.add(left.get(i++));
             } else {
                 merged.add(null); // Set smaller element to null
@@ -143,8 +137,8 @@ public class PickAYeshiva extends PickAYeshivaBase{
 
         // Set remaining elements of left list to null, if any
         while (i < left.size()) {
-            merged.add(null);
-            i++;
+            merged.add(left.get(i++));
+            //i++;
         }
 
         // Copy remaining elements of right list, if any
@@ -154,6 +148,10 @@ public class PickAYeshiva extends PickAYeshivaBase{
 
         return merged;
     }
+
+
+    // (left.get(i).facultyRanking == right.get(i).facultyRanking && left.get(i).cookingRanking < right.get(j).cookingRanking)
+    //                    || (left.get(i).facultyRanking != right.get(i).facultyRanking && left.get(i).cookingRanking <= right.get(j).cookingRanking)
 
 //    private void checkAgainstOtherYeshivas(Yeshiva yeshiva){
 //        for(Yeshiva yesh : this.validYeshivaChoices){
