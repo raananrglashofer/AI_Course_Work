@@ -1,6 +1,7 @@
 package edu.yu.da;
 
 import java.util.*;
+
 public class PickAYeshiva extends PickAYeshivaBase{
     private double[] facultyRatioRankings;
     private double[] cookingRatioRankings;
@@ -9,11 +10,9 @@ public class PickAYeshiva extends PickAYeshivaBase{
     private class Yeshiva{      // implements Comparable<Yeshiva>
         private double facultyRanking;
         private double cookingRanking;
-        private int index;
-        public Yeshiva(double facultyRanking, double cookingRanking, int index){
+        public Yeshiva(double facultyRanking, double cookingRanking){
             this.facultyRanking = facultyRanking;
             this.cookingRanking = cookingRanking;
-            this.index = index;
         }
 
         @Override
@@ -54,16 +53,23 @@ public class PickAYeshiva extends PickAYeshivaBase{
      */
     public PickAYeshiva(double[] facultyRatioRankings, double[] cookingRankings) {
         super(facultyRatioRankings, cookingRankings);
+        //long startTime = System.nanoTime();
         if(facultyRatioRankings == null || cookingRankings == null || facultyRatioRankings.length != cookingRankings.length){
+            throw new IllegalArgumentException();
+        }
+        if(facultyRatioRankings.length == 0 || cookingRankings.length == 0){
             throw new IllegalArgumentException();
         }
         // make all Yeshivas
         for(int i = 0; i < facultyRatioRankings.length; i++){
-            Yeshiva yeshiva = new Yeshiva(facultyRatioRankings[i], cookingRankings[i], i);
+            Yeshiva yeshiva = new Yeshiva(facultyRatioRankings[i], cookingRankings[i]);
             this.allYeshivas.add(yeshiva);
         }
+        //long addYeshivaTime = System.nanoTime();
+        //long afterAddingTime = addYeshivaTime - startTime;
+        //System.out.println("After Adding Yeshiva Time: " + afterAddingTime / 1000000000.0 + " seconds");
         Comparator<Yeshiva> comparator = new Comparator<>() {
-            // sorts by faculty ranking and then tiebreaker is cooking ranker
+            // sorts by faculty ranking and then tiebreaker is cooking ranking
             // sorts in descending order
             @Override
             public int compare(Yeshiva y1, Yeshiva y2) {
@@ -82,7 +88,13 @@ public class PickAYeshiva extends PickAYeshivaBase{
             }
         };
         Collections.sort(this.allYeshivas, comparator);
+        //long sortTime = System.nanoTime();
+        //long afterSortingTime = sortTime - startTime;
+        //System.out.println("After Sorting By Faculty Time: " + afterSortingTime / 1000000000.0 + " seconds");
         List<Yeshiva> sortedList = mergeSort(this.allYeshivas);
+        //long postAlgorithm = System.nanoTime();
+        //long afterMerge = postAlgorithm - startTime;
+        //System.out.println("After Merging Time: " + afterMerge / 1000000000.0 + " seconds");
         for(int i = 0; i < sortedList.size(); i++){
             if(sortedList.get(i) != null){
                 this.validYeshivaChoices.add(sortedList.get(i));
@@ -102,6 +114,9 @@ public class PickAYeshiva extends PickAYeshivaBase{
             this.facultyRatioRankings[k] = validYeshivaChoices.get(k).facultyRanking;
             this.cookingRatioRankings[k] = validYeshivaChoices.get(k).cookingRanking;
         }
+        //long done = System.nanoTime();
+        //long allDone = done - startTime;
+        //System.out.println("Finished Time: " + allDone / 1000000000.0 + "seconds");
     }
 
     private List<Yeshiva> mergeSort(List<Yeshiva> yeshivas) {

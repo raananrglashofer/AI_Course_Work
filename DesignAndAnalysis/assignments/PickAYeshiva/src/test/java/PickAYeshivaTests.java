@@ -72,8 +72,8 @@ public class PickAYeshivaTests {
     @Test
     public void leffTimeTest(){
         // should take roughly 20 seconds
-        double[] faculty = new double[25000000];
-        double[] cooking = new double[25000000];
+        double[] faculty = new double[28000000];
+        double[] cooking = new double[28000000];
         for(int i = 0; i < faculty.length; i++){
             faculty[i] = (Math.random() * (faculty.length - 1) + 1);
             cooking[i] = (Math.random() * (faculty.length - 1) + 1);
@@ -232,4 +232,45 @@ public class PickAYeshivaTests {
         assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
         assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
     }
+    @Test
+    public void negativeRanking(){
+        double[] faculty = {-2, 5, 7, 3, 8};
+        double[] cooking = {6, 4, -6, 0, 1};
+
+        PickAYeshiva pay = new PickAYeshiva(faculty, cooking);
+
+        double[] newFaculty = pay.getFacultyRatioRankings();
+        double[] newCooking = pay.getCookingRankings();
+        double[] answerFaculty = {8, 5, -2};
+        double[] answerCooking = {1, 4, 6};
+        for(int i = 0; i < pay.getCookingRankings().length; i++){
+            System.out.println("Faculty Ghetto : " + pay.getFacultyRatioRankings()[i]);
+            System.out.println("Cooking Ghetto : " + pay.getCookingRankings()[i]);
+        }
+
+        assertTrue(Arrays.equals(pay.getFacultyRatioRankings(), answerFaculty));
+        assertTrue(Arrays.equals(pay.getCookingRankings(), answerCooking));
+    }
+
+    @Test
+    public void emptyArrays(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            double[] faculty = {};
+            double[] cooking = {6, 4, -6, 0, 1};
+            PickAYeshiva test = new PickAYeshiva(faculty, cooking);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            double[] faculty = {6, 4, -6, 0, 1};
+            double[] cooking = {};
+            PickAYeshiva test = new PickAYeshiva(faculty, cooking);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            double[] faculty = {};
+            double[] cooking = {};
+            PickAYeshiva test = new PickAYeshiva(faculty, cooking);
+        });
+    }
+
 }
