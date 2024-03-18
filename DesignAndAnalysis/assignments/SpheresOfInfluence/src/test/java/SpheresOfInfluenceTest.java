@@ -40,6 +40,13 @@ public class SpheresOfInfluenceTest {
             SpheresOfInfluence test = new SpheresOfInfluence(2, 4);
             test.addInfluencer("Hello", 3, 0);
         });
+
+        // adding two influencers with the same ID
+        assertThrows(IllegalArgumentException.class, () -> {
+            SpheresOfInfluence test = new SpheresOfInfluence(2, 4);
+            test.addInfluencer("A", 3, 4);
+            test.addInfluencer("A", 6, 6);
+        });
     }
 
     @Test

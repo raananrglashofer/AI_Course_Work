@@ -1,19 +1,20 @@
 package edu.yu.da;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class SpheresOfInfluence extends SpheresOfInfluenceBase{
     private int maxStrength;
     private int maxRight;
     private List<String> minimalCoverageInfluencers = new ArrayList<>();
-    private List<Influencer> influencers = new ArrayList<>();
+    private Set<Influencer> influencers = new HashSet<>();
+    private Set<String> ids = new HashSet<>();
+
     private class Influencer{
         private String id;
         private int xValue;
         private int radius;
+
         public Influencer(String id, int xValue, int radius){
             this.id = id;
             this.xValue = xValue;
@@ -54,10 +55,11 @@ public class SpheresOfInfluence extends SpheresOfInfluenceBase{
      */
     @Override
     public void addInfluencer(String id, int xValue, int radius) {
-        if(id.isEmpty() || xValue < 0 || radius < 1){
+        if(id.isEmpty() || xValue < 0 || radius < 1 || this.ids.contains(id)){
            throw new IllegalArgumentException();
         }
         Influencer influencer = new Influencer(id, xValue, radius);
+        this.ids.add(id);
         this.influencers.add(influencer);
     }
 
