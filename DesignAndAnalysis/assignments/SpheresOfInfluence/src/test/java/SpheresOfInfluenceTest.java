@@ -50,12 +50,44 @@ public class SpheresOfInfluenceTest {
     }
 
     @Test
-    public void simpleLeffTest(){
+    public void simpleLeffTestPass(){
         SpheresOfInfluence soi = new SpheresOfInfluence(2, 10);
         soi.addInfluencer("A", 2, 3);
         soi.addInfluencer("B", 6, 5);
         List<String> solution = soi.getMinimalCoverageInfluencers();
         List<String> expected = List.of("A", "B");
         assertEquals(solution, expected);
+    }
+
+    @Test
+    public void simpleLeffTestFail(){
+        SpheresOfInfluence soi = new SpheresOfInfluence(2, 12);
+        soi.addInfluencer("A", 2, 3);
+        soi.addInfluencer("B", 6, 5);
+        List<String> solution = soi.getMinimalCoverageInfluencers();
+        List<String> expected = Collections.emptyList();
+        // List should be empty
+        assertEquals(solution, expected);
+    }
+
+    @Test
+    public void leffTimeTest(){
+        long startTime = System.nanoTime();
+        SpheresOfInfluence soi = new SpheresOfInfluence(2, 12);
+        for(int i = 1; i < 8001; i++){
+            soi.addInfluencer(String.valueOf(i), 1, i);
+        }
+        List<String> solution = soi.getMinimalCoverageInfluencers();
+        long endTime = System.nanoTime();
+        long time = endTime - startTime;
+        assertTrue(time / 1000000000.0 <= 0.45);
+    }
+
+    // create test where largest influencer is not in minimal set
+    // 3 influencers and 2 smallest make min set spanning whole region (i.e. biggest is extreneous)
+    // if biggest is included then need all 3 - biggest needs 2 others
+    @Test
+    public void tooGreedyTest(){
+
     }
 }
