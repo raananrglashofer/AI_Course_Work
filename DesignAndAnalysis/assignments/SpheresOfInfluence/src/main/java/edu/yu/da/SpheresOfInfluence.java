@@ -5,8 +5,8 @@ import java.lang.*;
 
 
 public class SpheresOfInfluence extends SpheresOfInfluenceBase{
-    private int maxStrength;
-    private int maxRight;
+    private final int maxStrength;
+    private final int maxRight;
     private Set<Influencer> influencers = new HashSet<>();
     private Set<String> ids = new HashSet<>();
     private List<Influencer> validInfluencers = new ArrayList<>();
@@ -15,8 +15,8 @@ public class SpheresOfInfluence extends SpheresOfInfluenceBase{
         private String id;
         private int xValue;
         private int radius;
-        private int leftMostIntersection; // these calculations are off and need to be using pythagorean theorem
-        private int rightMostIntersection;// these calculations are off and need to be using pythagorean theorem
+        private double leftMostIntersection; // these calculations are off and need to be using pythagorean theorem
+        private double rightMostIntersection;// these calculations are off and need to be using pythagorean theorem
 
         public Influencer(String id, int xValue, int radius){
             this.id = id;
@@ -110,15 +110,14 @@ public class SpheresOfInfluence extends SpheresOfInfluenceBase{
         }
         sortValidInfluencers();
 
-        int currentX = 0;
+        double currentX = 0;
         List<String> selectedInfluencersIds = new ArrayList<>();
 
         while (currentX < maxRight) {
             Influencer bestInfluencer = null;
-            int furthestX = currentX;
+            double furthestX = currentX;
 
             for (Influencer influencer : this.validInfluencers) {
-                // Influencer is eligible if it starts before or at the currentX and extends further than any we've seen so far.
                 if (influencer.leftMostIntersection <= currentX && influencer.rightMostIntersection > furthestX) {
                     bestInfluencer = influencer;
                     furthestX = influencer.rightMostIntersection;
@@ -126,28 +125,22 @@ public class SpheresOfInfluence extends SpheresOfInfluenceBase{
             }
 
             if (bestInfluencer == null) {
-                // This means we couldn't find any influencer to extend the coverage from currentX.
-                // Thus, full coverage is impossible with the given set of influencers.
                 return Collections.emptyList();
             }
 
-            // Add the best influencer for this segment and update currentX to the new furthest right point.
             selectedInfluencersIds.add(bestInfluencer.id);
-            currentX = furthestX; // Move to the end of the best influencer's coverage
+            currentX = furthestX;
 
-            // Optimization: remove the selected influencer from consideration in future iterations
             this.validInfluencers.remove(bestInfluencer);
         }
-
-        // Sort the selected influencers' IDs in lexicographical order before returning.
         Collections.sort(selectedInfluencersIds);
         return selectedInfluencersIds;
     }
     // I think this math gets the intersection points correctly
     private void setIntersectionPoints(Influencer influencer){
-        int a = maxStrength / 2;
-        int c = influencer.radius;
-        int b = (int) Math.sqrt((c * c) - (a * a));
+        double a = maxStrength / 2.0;
+        double c = influencer.radius;
+        double b = Math.sqrt((c * c) - (a * a));
         influencer.leftMostIntersection = influencer.xValue - b;
         influencer.rightMostIntersection = influencer.xValue + b;
     }
