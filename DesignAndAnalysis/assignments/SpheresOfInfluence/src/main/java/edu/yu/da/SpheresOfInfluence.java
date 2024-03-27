@@ -118,9 +118,13 @@ public class SpheresOfInfluence extends SpheresOfInfluenceBase{
             double furthestX = currentX;
 
             for (Influencer influencer : this.validInfluencers) {
-                if (influencer.leftMostIntersection <= currentX && influencer.rightMostIntersection > furthestX) {
-                    bestInfluencer = influencer;
-                    furthestX = influencer.rightMostIntersection;
+                if (influencer.leftMostIntersection <= currentX) {
+                    if(influencer.rightMostIntersection > furthestX) {
+                        bestInfluencer = influencer;
+                        furthestX = influencer.rightMostIntersection;
+                    }
+                } else{
+                    break;
                 }
             }
 

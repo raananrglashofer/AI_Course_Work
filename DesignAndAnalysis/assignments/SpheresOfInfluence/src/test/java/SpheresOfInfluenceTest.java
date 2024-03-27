@@ -83,15 +83,15 @@ public class SpheresOfInfluenceTest {
     @Test
     public void leffTimeTest(){
         long startTime = System.nanoTime();
-        SpheresOfInfluence soi = new SpheresOfInfluence(2, 12);
+        SpheresOfInfluence soi = new SpheresOfInfluence(4, 8000);
         for(int i = 1; i < 8001; i++){
-            soi.addInfluencer(String.valueOf(i), i, 2);
+            soi.addInfluencer(String.valueOf(i), i, 3);
         }
         List<String> solution = soi.getMinimalCoverageInfluencers();
         long endTime = System.nanoTime();
-        long time = (long) ((endTime - startTime) / 1000000000.0);
-        System.out.println("Algorithm time: " + time + " seconds");
-        assertTrue(time <= 0.45);
+        long time = (long) ((endTime - startTime) / 1000000.0);
+        System.out.println("Algorithm time: " + time + " milliseconds");
+        assertTrue(time <= 45);
     }
 
     @Test
@@ -109,15 +109,15 @@ public class SpheresOfInfluenceTest {
     public void manyInfluencers(){
         SpheresOfInfluence soi = new SpheresOfInfluence(8, 10);
         soi.addInfluencer("A", 2, 3);
-        soi.addInfluencer("B", 7, 5);
-        soi.addInfluencer("C", 3, 5);
+        soi.addInfluencer("J", 7, 5);
+        soi.addInfluencer("B", 3, 5);
         soi.addInfluencer("D", 1, 3);
         soi.addInfluencer("E", 2, 4);
         soi.addInfluencer("F", 2, 1);
         soi.addInfluencer("G", 2, 3);
         soi.addInfluencer("H", 3, 3);
         List<String> solution = soi.getMinimalCoverageInfluencers();
-        List<String> expected = List.of("B", "C");
+        List<String> expected = List.of("B", "J");
         assertEquals(solution, expected);
     }
 
