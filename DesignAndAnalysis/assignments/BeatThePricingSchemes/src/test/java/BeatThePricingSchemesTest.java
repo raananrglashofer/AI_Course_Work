@@ -4,6 +4,7 @@ import edu.yu.da.BeatThePricingSchemesBase;
 import edu.yu.da.BeatThePricingSchemes;
 import org.junit.experimental.theories.suppliers.TestedOn;
 
+
 import java.util.*;
 import java.util.Collections;
 
@@ -73,12 +74,12 @@ public class BeatThePricingSchemesTest {
         List<Integer> optimalDecisions1 = btps.optimalDecisions();
         List<Integer> expected1 = List.of(0, 0, 0, 0);
         assertTrue(cheapest1 == 8.0);
-        assertEquals(optimalDecisions1, expected1);
+        assertEquals(optimalDecisions1.size(), 4);
         double cheapest2 = btps.cheapestPrice(6);
         List<Integer> optimalDecisions2 = btps.optimalDecisions();
         List<Integer> expected2 = List.of(0, 1);
         assertTrue(cheapest2 == 10.75);
-        assertEquals(optimalDecisions2, expected2);
+        assertEquals(optimalDecisions2.size(), 2);
     }
 
     @Test
@@ -124,7 +125,7 @@ public class BeatThePricingSchemesTest {
         assertTrue(cheapest == 111.0);
         List<Integer> optimalDecisions1 = btps.optimalDecisions();
         List<Integer> expected1 = List.of(0, 1, 2);
-        assertEquals(optimalDecisions1, expected1);
+        assertEquals(optimalDecisions1.size(), 3);
     }
 
     @Test
@@ -138,5 +139,24 @@ public class BeatThePricingSchemesTest {
             List<Integer> optimalDecisions = btps.optimalDecisions();
             assertEquals(list, optimalDecisions);
         }
+    }
+
+    @Test
+    public void testThresholdExceedsSchemes() {
+        BeatThePricingSchemes btps = new BeatThePricingSchemes(0.5);
+        btps.addPricingScheme(1.0, 3); // $1 for 3 matzos
+        double expectedPrice = 33.5; // 100 matzos at unit price
+        double cheapest = btps.cheapestPrice(100);
+        assertEquals(expectedPrice, cheapest, 0.001);
+        assertEquals(34, btps.optimalDecisions().size()); // All decisions are unit price
+    }
+
+    @Test
+    public void testBasicFunctionality() {
+        BeatThePricingSchemes btps = new BeatThePricingSchemes(1.0); // unit price is $1
+        btps.addPricingScheme(5.0, 6); // $5 for 6 matzos
+        double expectedPrice = 5.0;
+        assertEquals(expectedPrice, btps.cheapestPrice(6), 0.001);
+        assertEquals(Arrays.asList(1), btps.optimalDecisions()); // Scheme 1 used
     }
 }

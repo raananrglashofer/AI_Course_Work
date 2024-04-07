@@ -52,7 +52,7 @@ public class BeatThePricingSchemes extends BeatThePricingSchemesBase{
             throw new IllegalArgumentException();
         }
         this.unitPrice = unitPrice;
-        PricingScheme scheme = new PricingScheme(unitPrice, 1, 0);
+        PricingScheme scheme = new PricingScheme(unitPrice, 1, UNIT_PRICE_DECISION);
         this.schemes.add(scheme);
     }
     /** Adds a pricing scheme to be considered when making the "select optimal
@@ -67,15 +67,15 @@ public class BeatThePricingSchemes extends BeatThePricingSchemesBase{
      */
     @Override
     public void addPricingScheme(double price, int quantity) {
-        if(price <= 0 || quantity < 1 || quantity > MAX_MATZOS || this.schemes.size() == 21){
+        if(price <= 0 || quantity < 1 || quantity > MAX_MATZOS || this.schemes.size() == MAX_SCHEMES+1){
             throw new IllegalArgumentException();
         }
         PricingScheme scheme = new PricingScheme(price, quantity, this.count++); // I believe this makes it go up and looks cooler
         // if cost per matzah is greater than unitPrice CPM then never will get used
-        if((scheme.price / scheme.quantity) <= this.unitPrice){
-            this.schemes.add(scheme);
-            this.priceSchemesAdded = true;;
-        }
+  //  if((scheme.price / scheme.quantity) <= this.unitPrice){
+        this.schemes.add(scheme);
+        this.priceSchemesAdded = true;;
+    //}
     }
     /** Returns the cheapest price needed to buy at least threshold items.  Thus
      * the quantity bought may exceed the threshold, as long as that is the
@@ -108,7 +108,7 @@ public class BeatThePricingSchemes extends BeatThePricingSchemesBase{
         // very hacky and should be met with caution
         Double cheapest = (double) Integer.MAX_VALUE;
         int index = threshold;
-        for(int i = threshold; i < MAX_MATZOS; i++){
+        for(int i = threshold; i < MAX_MATZOS+1; i++){
             if(this.bestPrices[i] < cheapest){
                 cheapest = this.bestPrices[i];
                 index = i;
