@@ -91,6 +91,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
         // might delete later
         Warehouse warehouse = new Warehouse(warehouseId, constraint);
         this.warehouses.add(warehouse);
+        this.flowNetwork.addVertex(warehouseId);
     }
 
 
@@ -119,7 +120,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
         // double check if need to do this
         if(this.flowNetwork.E() > 0){
             for(FlowEdge e : this.flowNetwork.edges()){ // need to do null checks in this method in EdgeWeightedDGraph class or here
-                if(e.to().equals(edge.to()) || e.from().equals(edge.from())){ //can't be two roads between same warehouses
+                if(e.to().equals(edge.to()) && e.from().equals(edge.from())){  // can't be two roads between same warehouses
                     throw new IllegalArgumentException(); // edge already exists
                 }
             }
@@ -136,6 +137,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
      */
     @Override
     public int max() {
-        return 0;
+        FordFulkerson maxFlow = new FordFulkerson(this.flowNetwork, sourceWarehouse, destinationWarehouse);
+        return (int) maxFlow.value();
     }
 }

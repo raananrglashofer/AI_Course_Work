@@ -86,6 +86,65 @@ public class MatzoDistributionTests {
             MatzoDistribution test = new MatzoDistribution("A", 4, "B");
             test.roadExists("A", "F", 0);
         });
+
+        // adding repeat road
+        assertThrows(IllegalArgumentException.class, () -> {
+            MatzoDistribution test = new MatzoDistribution("A", 4, "B");
+            test.addWarehouse("B", 5);
+            test.roadExists("A", "B", 6);
+            test.roadExists("A", "B", 10);
+        });
     }
 
+
+    @Test
+    public void roadsNeverAdded(){
+        MatzoDistribution test = new MatzoDistribution("A", 5, "B");
+        double flow = test.max();
+        assertTrue(flow == 0);
+    }
+
+    @Test
+    public void roadsNeverConnect(){
+        MatzoDistribution test = new MatzoDistribution("A", 5, "B");
+        test.addWarehouse("C", 4);
+        test.roadExists("A", "C", 4);
+        double flow = test.max();
+        assertTrue(flow == 0);
+    }
+
+    @Test
+    public void superSimpleFlow(){
+        MatzoDistribution test = new MatzoDistribution("A", 5, "B");
+        test.addWarehouse("C", 4);
+        test.roadExists("A", "C", 4);
+        test.roadExists("C", "B", 4);
+        double flow = test.max();
+        assertTrue(flow == 4);
+    }
+
+    @Test
+    public void wareHouseLimits(){
+        MatzoDistribution test = new MatzoDistribution("A", 10, "D");
+        test.addWarehouse("B", 1);
+        test.addWarehouse("C", 10);
+        test.roadExists("A", "B", 10);
+        test.roadExists("B", "C", 10);
+        test.roadExists("C", "D", 10);
+        double flow = test.max();
+        assertTrue(flow == 1);
+    }
+
+    @Test
+    public void simpleSplitFlowToGetMax(){
+        MatzoDistribution test = new MatzoDistribution("A", 10, "D");
+        test.addWarehouse("B", 5);
+        test.addWarehouse("C", 5);
+        test.roadExists("A", "B", 10);
+        test.roadExists("A", "C", 10);
+        test.roadExists("B", "D", 10);
+        test.roadExists("C", "D", 10);
+        double flow = test.max();
+        assertTrue(flow == 10);
+    }
 }

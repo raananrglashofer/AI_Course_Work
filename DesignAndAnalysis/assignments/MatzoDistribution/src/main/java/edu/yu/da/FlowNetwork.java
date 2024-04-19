@@ -17,10 +17,10 @@ public class FlowNetwork {
      * @param V the number of vertices
      * @throws IllegalArgumentException if {@code V < 0}
      */
-    public FlowNetwork(String V) {
-        if (V.length() < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be non-negative");
-        this.vertexIndices.put(V, 0);
-        this.vertices.add(V);
+    public FlowNetwork(String v) {
+        if (v.length() < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be non-negative");
+        this.vertexIndices.put(v, 0);
+        this.vertices.add(v);
         this.adj = (Bag<FlowEdge>[]) new Bag[1];
         this.V++;
     }
@@ -57,8 +57,9 @@ public class FlowNetwork {
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
     private void validateVertex(String v) {
-        if (v.length() < 0 || !vertexIndices.containsKey(v))
+        if (v.length() < 0 || !vertexIndices.containsKey(v)){
             throw new IllegalArgumentException("Invalid Vertex");
+        }
     }
 
     /**
@@ -107,6 +108,10 @@ public class FlowNetwork {
             }
         }
         return list;
+    }
+
+    public HashMap<String, Integer> getVertexIndices(){
+        return this.vertexIndices;
     }
 
 
