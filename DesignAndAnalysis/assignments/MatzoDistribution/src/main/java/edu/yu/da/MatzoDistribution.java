@@ -3,9 +3,12 @@ package edu.yu.da;
 import java.util.*;
 
 public class MatzoDistribution extends MatzoDistributionBase{
+    private FlowNetwork flowNetwork;
     private String sourceWarehouse;
     private String destinationWarehouse;
+    private int sourceConstraint;
     private Set<Warehouse> warehouses = new HashSet<>();
+    private Set<FlowEdge> edges = new HashSet<>();
     private Set<String> warehouseIds = new HashSet<>();
 
     private class Warehouse{
@@ -37,7 +40,6 @@ public class MatzoDistribution extends MatzoDistributionBase{
             return warehouseId.equals(warehouse.warehouseId);
         }
     }
-    private int sourceConstraint;
 
     /** Constructor: defines the two "endpoints" of the distribution network.
      *
@@ -64,6 +66,8 @@ public class MatzoDistribution extends MatzoDistributionBase{
         Warehouse source = new Warehouse(sourceWarehouse, sourceConstraint);
         this.warehouses.add(source);
         this.warehouseIds.add(destinationWarehouse);
+        this.flowNetwork = new FlowNetwork(sourceWarehouse);
+        this.flowNetwork.addVertex(destinationWarehouse); // very debatable and need to get confirmation on this
     }
 
     /** Adds a warehouse to the distribution network.
@@ -84,6 +88,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
         if(this.warehouseIds.contains(warehouseId)){
             throw new IllegalArgumentException();
         }
+        // might delete later
         Warehouse warehouse = new Warehouse(warehouseId, constraint);
         this.warehouses.add(warehouse);
     }
@@ -104,6 +109,23 @@ public class MatzoDistribution extends MatzoDistributionBase{
         if(constraint < 1 || w1.isBlank() || w2.isBlank() || w1.equals(w2) || !this.warehouseIds.contains(w1) || !this.warehouseIds.contains(w2)){
             throw new IllegalArgumentException();
         }
+        // if road going into source
+        // if road leaving destination
+        if(w2.equals(sourceWarehouse) || w1.equals(destinationWarehouse)){
+            throw new IllegalArgumentException();
+        }
+
+        FlowEdge edge = new FlowEdge(w1, w2, constraint);
+        // double check if need to do this
+        if(this.flowNetwork.E() > 0){
+            for(FlowEdge e : this.flowNetwork.edges()){ // need to do null checks in this method in EdgeWeightedDGraph class or here
+                if(e.to().equals(edge.to()) || e.from().equals(edge.from())){ //can't be two roads between same warehouses
+                    throw new IllegalArgumentException(); // edge already exists
+                }
+            }
+        }
+        this.flowNetwork.addEdge(edge);
+        this.edges.add(edge);
     }
 
     /** Returns the maximum amount of matzos per day that the source warehouse
