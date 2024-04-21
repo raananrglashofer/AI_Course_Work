@@ -55,7 +55,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
      */
     public MatzoDistribution(String sourceWarehouse, int sourceConstraint, String destinationWarehouse){
         super(sourceWarehouse, sourceConstraint, destinationWarehouse);
-        if(sourceWarehouse.isBlank() || destinationWarehouse.isBlank()|| sourceWarehouse.equals(destinationWarehouse) || sourceConstraint < 1){
+        if(sourceWarehouse == null || destinationWarehouse == null || sourceWarehouse.isBlank() || destinationWarehouse.isBlank()|| sourceWarehouse.equals(destinationWarehouse) || sourceConstraint < 1){
             throw new IllegalArgumentException();
         }
         this.sourceWarehouse = sourceWarehouse;
@@ -82,7 +82,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
      */
     @Override
     public void addWarehouse(String warehouseId, int constraint) {
-        if(warehouseId.isBlank() || constraint < 1){
+        if(warehouseId == null || warehouseId.isBlank() || constraint < 1){
             throw new IllegalArgumentException();
         }
         if(this.warehouseIds.contains(warehouseId)){
@@ -107,7 +107,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
      */
     @Override
     public void roadExists(String w1, String w2, int constraint) {
-        if(constraint < 1 || w1.isBlank() || w2.isBlank() || w1.equals(w2) || !this.warehouseIds.contains(w1) || !this.warehouseIds.contains(w2)){
+        if(w1 == null || w2 == null || constraint < 1 || w1.isBlank() || w2.isBlank() || w1.equals(w2) || !this.warehouseIds.contains(w1) || !this.warehouseIds.contains(w2)){
             throw new IllegalArgumentException();
         }
         // if road going into source
