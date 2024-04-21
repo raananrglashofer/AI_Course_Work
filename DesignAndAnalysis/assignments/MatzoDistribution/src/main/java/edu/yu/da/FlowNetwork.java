@@ -14,28 +14,38 @@ public class FlowNetwork {
 
     /**
      * Initializes an empty flow network with {@code V} vertices and 0 edges.
-     * @param V the number of vertices
+     * @param //V the number of vertices
      * @throws IllegalArgumentException if {@code V < 0}
      */
-    public FlowNetwork(String v) {
+    public FlowNetwork(String v, int sourceConstraint) {
         if (v.length() < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be non-negative");
-        this.vertexIndices.put(v, 0);
-        this.vertices.add(v);
-        this.adj = (Bag<FlowEdge>[]) new Bag[1];
-        this.V++;
+        String vin = v + "_in";
+        String vout = v + "_out";
+        this.vertexIndices.put(vin, this.V++);
+        this.vertices.add(vin);
+        this.vertexIndices.put(vout, this.V++);
+        this.vertices.add(vout);
+        this.adj = (Bag<FlowEdge>[]) new Bag[2];
+        FlowEdge sourceFlow = new FlowEdge(vin, vout, sourceConstraint);
+        addEdge(sourceFlow);
     }
 
-    public void addVertex(String vertex) {
+    public void addVertex(String vertex, int constraint) {
         if (!vertexIndices.containsKey(vertex)) {
-            vertexIndices.put(vertex, V);
-            this.vertices.add(vertex);
-            Bag<FlowEdge>[] newAdj = (Bag<FlowEdge>[]) new Bag[V+1];
+            Bag<FlowEdge>[] newAdj = (Bag<FlowEdge>[]) new Bag[V+2];
             for (int v = 0; v < V; v++) {
                 newAdj[v] = adj[v];
             }
             newAdj[V] = new Bag<FlowEdge>(); // i don't think this line is neccesary
             adj = newAdj;
-            V++; // increase count after vertex added
+            String vin = vertex + "_in";
+            String vout = vertex + "_out";
+            vertexIndices.put(vin, this.V++);
+            this.vertices.add(vin);
+            vertexIndices.put(vout, this.V++);
+            this.vertices.add(vout);
+            FlowEdge vertexEdge = new FlowEdge(vin, vout, constraint);
+            addEdge(vertexEdge);
         }
     }
 
@@ -77,6 +87,9 @@ public class FlowNetwork {
             adj[vertexIndices.get(v)] = new Bag<FlowEdge>();
         }
         adj[vertexIndices.get(v)].add(e);
+        if(adj[vertexIndices.get(w)] == null){
+            adj[vertexIndices.get(w)] = new Bag<FlowEdge>();
+        }
         adj[vertexIndices.get(w)].add(e); // in place of this code adj[w].add(e) --> come back to this!
         this.edges.add(e);
         E++;

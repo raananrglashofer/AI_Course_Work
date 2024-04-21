@@ -66,8 +66,8 @@ public class MatzoDistribution extends MatzoDistributionBase{
         Warehouse source = new Warehouse(sourceWarehouse, sourceConstraint);
         this.warehouses.add(source);
         this.warehouseIds.add(destinationWarehouse);
-        this.flowNetwork = new FlowNetwork(sourceWarehouse);
-        this.flowNetwork.addVertex(destinationWarehouse); // very debatable and need to get confirmation on this
+        this.flowNetwork = new FlowNetwork(sourceWarehouse, sourceConstraint);
+        this.flowNetwork.addVertex(destinationWarehouse, Integer.MAX_VALUE); // max should not restrict max flow at all - double check
     }
 
     /** Adds a warehouse to the distribution network.
@@ -91,7 +91,7 @@ public class MatzoDistribution extends MatzoDistributionBase{
         // might delete later
         Warehouse warehouse = new Warehouse(warehouseId, constraint);
         this.warehouses.add(warehouse);
-        this.flowNetwork.addVertex(warehouseId);
+        this.flowNetwork.addVertex(warehouseId, constraint);
     }
 
 
@@ -115,8 +115,9 @@ public class MatzoDistribution extends MatzoDistributionBase{
         if(w2.equals(sourceWarehouse) || w1.equals(destinationWarehouse)){
             throw new IllegalArgumentException();
         }
-
-        FlowEdge edge = new FlowEdge(w1, w2, constraint);
+        String vout = w1 + "_out";
+        String vin = w2 + "_in";
+        FlowEdge edge = new FlowEdge(vout, vin, constraint);
         // double check if need to do this
         if(this.flowNetwork.E() > 0){
             for(FlowEdge e : this.flowNetwork.edges()){ // need to do null checks in this method in EdgeWeightedDGraph class or here
@@ -137,7 +138,9 @@ public class MatzoDistribution extends MatzoDistributionBase{
      */
     @Override
     public int max() {
-        FordFulkerson maxFlow = new FordFulkerson(this.flowNetwork, sourceWarehouse, destinationWarehouse);
+        String sourceIn = sourceWarehouse + "_in";
+        String destinationOut = destinationWarehouse + "_out";
+        FordFulkerson maxFlow = new FordFulkerson(this.flowNetwork, sourceIn, destinationOut);
         return (int) maxFlow.value();
     }
 }

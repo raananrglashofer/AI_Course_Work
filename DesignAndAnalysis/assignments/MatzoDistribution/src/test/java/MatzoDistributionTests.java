@@ -147,4 +147,56 @@ public class MatzoDistributionTests {
         double flow = test.max();
         assertTrue(flow == 10);
     }
+
+    @Test
+    public void flowIsMax(){
+        MatzoDistribution test = new MatzoDistribution("A", Integer.MAX_VALUE, "D");
+        test.addWarehouse("B", Integer.MAX_VALUE);
+        test.addWarehouse("C", Integer.MAX_VALUE);
+        test.addWarehouse("E", Integer.MAX_VALUE);
+        test.addWarehouse("F", Integer.MAX_VALUE);
+        test.addWarehouse("G", Integer.MAX_VALUE);
+
+        test.roadExists("A", "B", Integer.MAX_VALUE);
+        test.roadExists("A", "C", Integer.MAX_VALUE);
+        test.roadExists("B", "D", Integer.MAX_VALUE);
+        test.roadExists("C", "D", Integer.MAX_VALUE);
+        test.roadExists("A", "E", Integer.MAX_VALUE);
+        test.roadExists("C", "E", Integer.MAX_VALUE);
+        test.roadExists("F", "G", Integer.MAX_VALUE);
+        test.roadExists("A", "F", Integer.MAX_VALUE);
+
+        double flow = test.max();
+        assertTrue(flow == Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void bottleNeckFlow(){
+        MatzoDistribution test = new MatzoDistribution("S", 30, "T");
+        test.addWarehouse("A", 30);
+        test.addWarehouse("B", 30);
+        test.addWarehouse("C", 30);
+        test.addWarehouse("D", 30);
+        test.addWarehouse("E", 30);
+        test.addWarehouse("F", 30);
+
+        test.roadExists("S", "A", 10);
+        test.roadExists("A", "D", 9);
+        test.roadExists("A", "B", 4);
+        test.roadExists("A", "E", 15);
+        test.roadExists("S", "B", 5);
+        test.roadExists("B", "E", 8);
+        test.roadExists("B", "C", 4);
+        test.roadExists("S", "C", 15);
+        test.roadExists("C", "F", 16);
+        test.roadExists("F", "T", 10);
+        test.roadExists("F", "B", 6);
+        test.roadExists("E", "F", 15);
+        test.roadExists("E", "T", 10);
+        test.roadExists("D", "T", 10);
+        test.roadExists("D", "E", 15);
+
+        double max = test.max();
+        assertTrue(max == 28);
+    }
 }
