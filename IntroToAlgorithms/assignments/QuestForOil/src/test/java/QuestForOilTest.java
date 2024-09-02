@@ -84,4 +84,24 @@ public class QuestForOilTest {
         assertEquals(20, contiguous);
         System.out.println("Time: " + time);
     }
+
+    @Test
+    // two separate components
+    public void wayCrazierMap(){
+        char[][] map = {
+                {'U', 'S', 'U', 'U', 'U', 'S', 'U'},
+                {'S', 'U', 'U', 'U', 'U', 'S', 'S'},
+                {'S', 'U', 'S', 'S', 'U', 'S', 'S'},
+                {'S', 'S', 'U', 'S', 'U', 'U', 'U'},
+                {'U', 'S', 'S', 'S', 'S', 'U', 'U'},
+                {'S', 'S', 'U', 'S', 'U', 'U', 'U'}
+        };
+        QuestForOil quest = new QuestForOil(map);
+        Stopwatch timer = new Stopwatch();
+        int contiguous = quest.nContiguous(0,1);
+        double time = timer.elapsedTime();
+        assertEquals(15, contiguous);
+        assertEquals(5, quest.nContiguous(0,5));
+        System.out.println("Time: " + time);
+    }
 }
