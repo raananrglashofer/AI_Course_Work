@@ -9,7 +9,7 @@ def is_empty(f):
 
 def val(s):
     #return state.hdistance1(s)+state.path_len(s) #for A*
-    return state.hdistance0(s)+state.path_len(s) #for uniform-cost search
+    return state.hdistance(s)+state.path_len(s) #for uniform-cost search
     
 # Uniform Cost: return state.path_len(s)
 # Greedy Best First: return state.hdistance(s)

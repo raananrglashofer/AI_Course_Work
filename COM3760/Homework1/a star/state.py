@@ -56,3 +56,43 @@ def if_legal(x,m):                  # gets a board and a move and makes the move
 # This is your HW
 def hdistance0(s):                   # the heuristic value of s -- uniform cost
     return 0
+
+def hdistance1(s):
+    misplaced_tiles = 0
+    n = len(s)  # s[0] is the board
+    for i in range(n):
+        if s[i] != i and s[i] != 0:  # Tile is out of place and not the empty tile (0)
+            misplaced_tiles += 1
+    return misplaced_tiles
+
+def hdistance2(s):
+    coordinate_map = {
+        0: [0,0],
+        1: [0, 1],
+        2: [0, 2],
+        3: [0, 3],
+        4: [1, 0],
+        5: [1, 1],
+        6: [1, 2],
+        7: [1, 3],
+        8: [2, 0],
+        9: [2, 1],
+        10: [2, 2],
+        11: [2, 3],
+        12: [3, 0],
+        13: [3, 1],
+        14: [3, 2],
+        15: [3, 3]
+    }
+    manhattan_dist = 0
+    n = len(s)
+    for i in range(n):
+        if s[i] != i:
+            current = coordinate_map.get(s[i])
+            shouldBe = coordinate_map.get(i)
+            difference = abs(current[0] - shouldBe[0]) + abs(current[1] - shouldBe[0])
+            manhattan_dist += difference
+    return manhattan_dist
+
+def hdistance3(s):
+    return 0
