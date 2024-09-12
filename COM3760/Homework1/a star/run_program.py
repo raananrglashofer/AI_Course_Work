@@ -3,7 +3,7 @@ import frontier
 import search
 
 TOTAL_RUNS = 100
-MAX_PUSH_LIMIT = 2000  # Limit where the algorithm stops if it exceeds
+MAX_PUSH_LIMIT = 10000  # Limit where the algorithm stops if it exceeds
 
 
 def run_search(description):
@@ -27,7 +27,7 @@ def run_search(description):
             # If no result was found (e.g., hit the limit)
             total_pushes.append(MAX_PUSH_LIMIT)
             total_pops.append(MAX_PUSH_LIMIT)
-            path_costs.append(MAX_PUSH_LIMIT)
+            path_costs.append(100)
 
     # Save the results to a file
     save_results(total_pushes, total_pops, path_costs, description)
@@ -71,5 +71,5 @@ def save_results(pushed, popped, path_costs, description):
 
 # Main function to run the searches
 if __name__ == "__main__":
-        run_search('Linear Conflict')  # First run with hdistance0
+        run_search('Manhattan Distance')  # First run with hdistance0
     # Manually switch heuristic in frontier.py and re-run this script for the other heuristics.

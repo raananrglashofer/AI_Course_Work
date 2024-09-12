@@ -8,7 +8,7 @@ def is_empty(f):
     return f[0]==[]
 
 def val(s):
-    return state.hdistance3(s)+state.path_len(s) #for A*
+    return 2*state.hdistance3(s)+state.path_len(s) #for A*
     #return state.hdistance2(s)+state.path_len(s) #for uniform-cost search
     
 # Uniform Cost: return state.path_len(s)
