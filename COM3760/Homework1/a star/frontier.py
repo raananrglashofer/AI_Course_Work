@@ -8,8 +8,8 @@ def is_empty(f):
     return f[0]==[]
 
 def val(s):
-    #return state.hdistance1(s)+state.path_len(s) #for A*
-    return state.hdistance(s)+state.path_len(s) #for uniform-cost search
+    return state.hdistance3(s)+state.path_len(s) #for A*
+    #return state.hdistance2(s)+state.path_len(s) #for uniform-cost search
     
 # Uniform Cost: return state.path_len(s)
 # Greedy Best First: return state.hdistance(s)
@@ -23,7 +23,7 @@ def insert(h, s):
         h[3]=h[2]
     f.append(s)
     i=len(f)-1
-    while i>0 and val(f[i])<val(f[(i-1)//2]):
+    while i > 0 and val(f[i]) < val(f[(i-1)//2]):
         t=f[i]
         f[i]=f[(i-1)//2]
         f[(i-1)//2]=t

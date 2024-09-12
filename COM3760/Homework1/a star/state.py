@@ -59,15 +59,15 @@ def hdistance0(s):                   # the heuristic value of s -- uniform cost
 
 def hdistance1(s):
     misplaced_tiles = 0
-    n = len(s)  # s[0] is the board
+    n = len(s[0])
     for i in range(n):
-        if s[i] != i and s[i] != 0:  # Tile is out of place and not the empty tile (0)
+        if s[0][i] != i and s[0][i] != 0:
             misplaced_tiles += 1
     return misplaced_tiles
 
 def hdistance2(s):
     coordinate_map = {
-        0: [0,0],
+        0: [0, 0],
         1: [0, 1],
         2: [0, 2],
         3: [0, 3],
@@ -85,14 +85,72 @@ def hdistance2(s):
         15: [3, 3]
     }
     manhattan_dist = 0
-    n = len(s)
+    n = len(s[0])
     for i in range(n):
-        if s[i] != i:
-            current = coordinate_map.get(s[i])
+        if s[0][i] != 0:
+            current = coordinate_map.get(s[0][i])
             shouldBe = coordinate_map.get(i)
-            difference = abs(current[0] - shouldBe[0]) + abs(current[1] - shouldBe[0])
+            difference = abs(current[0] - shouldBe[0]) + abs(current[1] - shouldBe[1])
             manhattan_dist += difference
     return manhattan_dist
 
 def hdistance3(s):
-    return 0
+    size = int(len(s[0]) ** 0.5)
+    manhattan_dist = 0
+    linear_conflict = 0
+
+    coordinate_map = {
+        0: [0, 0],
+        1: [0, 1],
+        2: [0, 2],
+        3: [0, 3],
+        4: [1, 0],
+        5: [1, 1],
+        6: [1, 2],
+        7: [1, 3],
+        8: [2, 0],
+        9: [2, 1],
+        10: [2, 2],
+        11: [2, 3],
+        12: [3, 0],
+        13: [3, 1],
+        14: [3, 2],
+        15: [3, 3]
+    }
+
+    for i in range(len(s[0])):
+        if s[0][i] != 0:
+            current = coordinate_map[s[0][i]]
+            shouldBe = coordinate_map[i]
+            manhattan_dist += abs(current[0] - shouldBe[0]) + abs(current[1] - shouldBe[1])
+
+    for row in range(size):
+        row_tiles = [s[0][i] for i in range(row * size, (row + 1) * size)]
+        linear_conflict += calculate_linear_conflict(row_tiles, row, coordinate_map, 'row')
+
+    for col in range(size):
+        col_tiles = [s[0][i * size + col] for i in range(size)]
+        linear_conflict += calculate_linear_conflict(col_tiles, col, coordinate_map, 'col')
+
+    return manhattan_dist + 2 * linear_conflict
+
+
+def calculate_linear_conflict(tiles, index, coordinate_map, axis):
+    conflict_count = 0
+
+    for i in range(len(tiles)):
+        for j in range(i + 1, len(tiles)):
+            if tiles[i] != 0 and tiles[j] != 0:
+                goal_pos_i = coordinate_map[tiles[i]]
+                goal_pos_j = coordinate_map[tiles[j]]
+
+                if axis == 'row' and goal_pos_i[0] == goal_pos_j[0] == index:
+                    if goal_pos_i[1] > goal_pos_j[1] and i < j:
+                        conflict_count += 1
+
+                if axis == 'col' and goal_pos_i[1] == goal_pos_j[1] == index:
+                    if goal_pos_i[0] > goal_pos_j[0] and i < j:
+                        conflict_count += 1
+
+    return conflict_count
+
