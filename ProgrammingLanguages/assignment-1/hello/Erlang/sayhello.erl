@@ -1,6 +1,7 @@
 -module(sayhello).
--export([main/1]).
-
+-export([main/1, main/0]).
+main() ->
+    main([]).
 main([Name]) ->
     io:format("Hello ~s~n", [Name]);
 main([]) ->
