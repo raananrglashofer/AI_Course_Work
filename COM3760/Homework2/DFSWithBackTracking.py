@@ -49,7 +49,7 @@ def solve_queens_dfs(size):
             # start to now check at col = (1 + value of prev_column in the row)
             col = 1 + prev_col
 # run it
-columns, num_iterations, number_moves, converged = solve_queens_dfs(20)
+columns, num_iterations, number_moves, converged = solve_queens_dfs(8)
 print(f"number of iterations: {num_iterations}")
 print(f"number of moves: {number_moves}")
 NQueens.displayBoard(columns)
