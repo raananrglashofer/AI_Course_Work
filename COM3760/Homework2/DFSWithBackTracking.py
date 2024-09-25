@@ -7,6 +7,8 @@ def solve_queens_dfs(size):
     col = 0  # always start each row at leftmost col
     # iterate over rows of board
     while True:
+        if number_of_iterations > 10000000:
+            return number_of_moves, number_of_iterations
         # place queen in next row
         # print("I am trying to put the queen in row ", row)
         # print(columns)
@@ -47,7 +49,7 @@ def solve_queens_dfs(size):
             # start to now check at col = (1 + value of prev_column in the row)
             col = 1 + prev_col
 # run it
-columns, num_iterations, number_moves, converged = solve_queens_dfs(10)
+columns, num_iterations, number_moves, converged = solve_queens_dfs(20)
 print(f"number of iterations: {num_iterations}")
 print(f"number of moves: {number_moves}")
 NQueens.displayBoard(columns)
