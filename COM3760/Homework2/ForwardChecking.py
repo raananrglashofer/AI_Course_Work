@@ -61,9 +61,10 @@ def solve_queens_forward_checking(n):
             col = 1 + prev_col
 # run it
 start = time.time()
-columns, num_iterations, number_moves = solve_queens_forward_checking(40)
+columns, num_iterations, number_moves = solve_queens_forward_checking(30)
 end = time.time()
 print(f"number of iterations: {num_iterations}")
 print(f"number of moves: {number_moves}")
-print("Time is: " + (end-start))
+time = end - start
+print("Time is: " + str(time))
 NQueens.displayBoard(columns)
