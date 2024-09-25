@@ -61,7 +61,7 @@ def solve_queens_forward_checking(n):
 
 # Run it
 start = time.time()
-columns, num_iterations, number_moves = solve_queens_forward_checking(50)
+columns, num_iterations, number_moves = solve_queens_forward_checking(40)
 end = time.time()
 print(f"number of iterations: {num_iterations}")
 print(f"number of moves: {number_moves}")
