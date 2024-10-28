@@ -90,10 +90,10 @@ def MoveRandom(board, color):
 def refined_heuristic(board, color):
     opponent_color = RED_INT if color == BLUE_INT else BLUE_INT
 
-    # Score for central column control
+    #Score for central column control
     center_column = [board[r][COLUMN_COUNT // 2] for r in range(ROW_COUNT)]
     center_count = center_column.count(color)
-    score = 3 * center_count
+    score = center_count / 2
 
     # Add score for current player's contiguous pieces
     score += evaluate_contiguous_pieces(board, color, weights={1: 0.1, 2: 0.3, 3: 1.0, 4: 1000})
@@ -101,7 +101,37 @@ def refined_heuristic(board, color):
     # Subtract score for opponent's contiguous pieces
     score -= evaluate_contiguous_pieces(board, opponent_color, weights={1: 0.1, 2: 0.3, 3: 1.2, 4: 1000})
 
+    score -= prioritize_blocking(board, opponent_color)
+
+    score -= check_double_trap(board, opponent_color)
+
     return score
+
+def prioritize_blocking(board, opponent_color):
+    blocking_score = 0
+
+    # Check all possible columns to see if the opponent can win in the next move
+    for col in range(COLUMN_COUNT):
+        if board[ROW_COUNT - 1, col] == 0:  # Ensure column is not full
+            temp_board = board.copy()
+            row = get_next_open_row(temp_board, col)
+            drop_chip(temp_board, row, col, opponent_color)
+            if game_is_won(temp_board, opponent_color):  # If opponent can win
+                blocking_score += 10  # High penalty to prioritize blocking
+
+    return blocking_score
+
+def check_double_trap(board, opponent_color):
+    penalty = 0
+
+    # Check for horizontal double traps
+    for r in range(ROW_COUNT):
+        row = board[r, :]
+        for c in range(COLUMN_COUNT - 3):
+            if row[c] == EMPTY and row[c+1] == opponent_color and row[c+2] == opponent_color and row[c+3] == EMPTY:
+                penalty += 1  # Penalty for potential double trap
+
+    return penalty
 
 def evaluate_contiguous_pieces(board, color, weights):
     total_value = 0
@@ -172,7 +202,7 @@ def minimax(board, depth, maximizingPlayer, color):
         return min_eval, best_move
 
 
-def get_best_move(board, color, depth=3):
+def get_best_move(board, color, depth=4):
     _, best_move = minimax(board, depth, True, color)
     return best_move
 
