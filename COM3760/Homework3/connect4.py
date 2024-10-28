@@ -167,6 +167,47 @@ def heuristic(board, color):
     my_material = evaluate_contiguous_pieces(board, color)
     opponent_material = evaluate_contiguous_pieces(board, RED_INT if color == BLUE_INT else BLUE_INT)
     return my_material - opponent_material
+def minimax_alpha_beta(board, depth, alpha, beta, maximizingPlayer, color):
+    if game_is_won(board, RED_INT) or game_is_won(board, BLUE_INT) or depth == 0:
+        return refined_heuristic(board, color), None
+
+    valid_locations = get_valid_locations(board)
+    best_move = None
+
+    if maximizingPlayer:
+        max_eval = float('-inf')
+        for col in valid_locations:
+            temp_board = board.copy()
+            row = get_next_open_row(temp_board, col)
+            drop_chip(temp_board, row, col, color)
+            eval, _ = minimax_alpha_beta(temp_board, depth - 1, alpha, beta, False, color)
+            if eval > max_eval:
+                max_eval = eval
+                best_move = col
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break  # Prune the branch
+        return max_eval, best_move
+
+    else:
+        min_eval = float('inf')
+        opponent_color = RED_INT if color == BLUE_INT else BLUE_INT
+        for col in valid_locations:
+            temp_board = board.copy()
+            row = get_next_open_row(temp_board, col)
+            drop_chip(temp_board, row, col, opponent_color)
+            eval, _ = minimax_alpha_beta(temp_board, depth - 1, alpha, beta, True, color)
+            if eval < min_eval:
+                min_eval = eval
+                best_move = col
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break  # Prune the branch
+        return min_eval, best_move
+
+def get_best_move_alpha_beta(board, color, depth=4):
+    _, best_move = minimax_alpha_beta(board, depth, float('-inf'), float('inf'), True, color)
+    return best_move
 
 
 def minimax(board, depth, maximizingPlayer, color):
@@ -202,12 +243,12 @@ def minimax(board, depth, maximizingPlayer, color):
         return min_eval, best_move
 
 
-def get_best_move(board, color, depth=4):
+def get_best_move(board, color, depth=7):
     _, best_move = minimax(board, depth, True, color)
     return best_move
 
 def MoveStrategic(board, color):
-    col = get_best_move(board, color)
+    col = get_best_move_alpha_beta(board, color)
     if col is not None:
         row = get_next_open_row(board, col)
         drop_chip(board, row, col, color)
