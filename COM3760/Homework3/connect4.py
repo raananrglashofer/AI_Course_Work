@@ -87,22 +87,30 @@ def MoveRandom(board, color):
     row = get_next_open_row(board, column)
     drop_chip(board, row, column, color)
 
+# heuristic is based off multiple factors such as middle column precedence, contiguous pieces for both
+# the opposing player and current player and it prioritizes blocking and avoiding double traps
 def refined_heuristic(board, color):
+    # figure out which color each player is
     opponent_color = RED_INT if color == BLUE_INT else BLUE_INT
 
-    #Score for central column control
+    # gives extra weighting towards pieces in the middle
     center_column = [board[r][COLUMN_COUNT // 2] for r in range(ROW_COUNT)]
     center_count = center_column.count(color)
     score = center_count / 2
 
     # Add score for current player's contiguous pieces
+    # Scores go up in weight as more pieces are contiguous
     score += evaluate_contiguous_pieces(board, color, weights={1: 0.1, 2: 0.3, 3: 1.0, 4: 1000})
 
     # Subtract score for opponent's contiguous pieces
+    # Scores go up in weight as more pieces are contiguous
+    # Have higher weights than current player's due to priority towards blocking
     score -= evaluate_contiguous_pieces(board, opponent_color, weights={1: 0.1, 2: 0.3, 3: 1.2, 4: 1000})
 
+    # subtract score if opponent has potential winning move
     score -= prioritize_blocking(board, opponent_color)
-
+    # subtract score if the opponent is starting to create a double trap
+    # blocks before the trap can take place
     score -= check_double_trap(board, opponent_color)
 
     return score
@@ -125,9 +133,12 @@ def check_double_trap(board, opponent_color):
     penalty = 0
 
     # Check for horizontal double traps
+    # Without this check the heuristic falls short in detecting when two pieces in a row are laid out that could
+    # set up a double trap if less unaccounted for
     for r in range(ROW_COUNT):
         row = board[r, :]
         for c in range(COLUMN_COUNT - 3):
+            # check if has two pieces in a row with openings on both sides
             if row[c] == EMPTY and row[c+1] == opponent_color and row[c+2] == opponent_color and row[c+3] == EMPTY:
                 penalty += 1  # Penalty for potential double trap
 
@@ -136,6 +147,7 @@ def check_double_trap(board, opponent_color):
 def evaluate_contiguous_pieces(board, color, weights):
     total_value = 0
 
+    # helper function in order to check each line for contiguous pieces
     def count_contiguous_pieces(line):
         count = 0
         max_value = 0
@@ -143,7 +155,7 @@ def evaluate_contiguous_pieces(board, color, weights):
             if cell == color:
                 count += 1
             else:
-                if cell == EMPTY and count > 0:  # Open space to extend
+                if cell == EMPTY and count > 0:  # Checks if there is also space to extend
                     max_value = max(max_value, weights.get(count, 0))
                 count = 0
         return max_value
@@ -163,11 +175,8 @@ def evaluate_contiguous_pieces(board, color, weights):
 
     return total_value
 
-def heuristic(board, color):
-    my_material = evaluate_contiguous_pieces(board, color)
-    opponent_material = evaluate_contiguous_pieces(board, RED_INT if color == BLUE_INT else BLUE_INT)
-    return my_material - opponent_material
 def minimax_alpha_beta(board, depth, alpha, beta, maximizingPlayer, color):
+    # base case
     if game_is_won(board, RED_INT) or game_is_won(board, BLUE_INT) or depth == 0:
         return refined_heuristic(board, color), None
 
@@ -175,29 +184,31 @@ def minimax_alpha_beta(board, depth, alpha, beta, maximizingPlayer, color):
     best_move = None
 
     if maximizingPlayer:
-        max_eval = float('-inf')
+        max_eval = float('-inf') # set to negative infinity
         for col in valid_locations:
             temp_board = board.copy()
             row = get_next_open_row(temp_board, col)
             drop_chip(temp_board, row, col, color)
+            # recursive call to minimax_alpha_beta with minimum player now
             eval, _ = minimax_alpha_beta(temp_board, depth - 1, alpha, beta, False, color)
-            if eval > max_eval:
+            if eval > max_eval: # check if current maximum point move
                 max_eval = eval
                 best_move = col
             alpha = max(alpha, eval)
             if beta <= alpha:
-                break  # Prune the branch
+                break  # Prune the branch - minimizing player won't allow the move maximizing player found
         return max_eval, best_move
 
     else:
-        min_eval = float('inf')
+        min_eval = float('inf') # set to positive infinity
         opponent_color = RED_INT if color == BLUE_INT else BLUE_INT
         for col in valid_locations:
             temp_board = board.copy()
             row = get_next_open_row(temp_board, col)
             drop_chip(temp_board, row, col, opponent_color)
+            # recursive call back to minimax_alpha_beta with maximizingPlayer now
             eval, _ = minimax_alpha_beta(temp_board, depth - 1, alpha, beta, True, color)
-            if eval < min_eval:
+            if eval < min_eval: # check if current minimum value move
                 min_eval = eval
                 best_move = col
             beta = min(beta, eval)
@@ -206,48 +217,13 @@ def minimax_alpha_beta(board, depth, alpha, beta, maximizingPlayer, color):
         return min_eval, best_move
 
 def get_best_move_alpha_beta(board, color, depth=4):
+    # gets the best move by using minimax_alpha_beta
     _, best_move = minimax_alpha_beta(board, depth, float('-inf'), float('inf'), True, color)
     return best_move
 
-
-def minimax(board, depth, maximizingPlayer, color):
-    if game_is_won(board, RED_INT) or game_is_won(board, BLUE_INT) or depth == 0:
-        return refined_heuristic(board, color), None
-
-    valid_locations = get_valid_locations(board)
-    best_move = None
-
-    if maximizingPlayer:
-        max_eval = float('-inf')
-        for col in valid_locations:
-            temp_board = board.copy()
-            row = get_next_open_row(temp_board, col)
-            drop_chip(temp_board, row, col, color)
-            eval, _ = minimax(temp_board, depth - 1, False, color)
-            if eval > max_eval:
-                max_eval = eval
-                best_move = col
-        return max_eval, best_move
-
-    else:
-        min_eval = float('inf')
-        opponent_color = RED_INT if color == BLUE_INT else BLUE_INT
-        for col in valid_locations:
-            temp_board = board.copy()
-            row = get_next_open_row(temp_board, col)
-            drop_chip(temp_board, row, col, opponent_color)
-            eval, _ = minimax(temp_board, depth - 1, True, color)
-            if eval < min_eval:
-                min_eval = eval
-                best_move = col
-        return min_eval, best_move
-
-
-def get_best_move(board, color, depth=7):
-    _, best_move = minimax(board, depth, True, color)
-    return best_move
-
 def MoveStrategic(board, color):
+    # function to play in the main
+    # used the minimax_alpha_beta algorithm
     col = get_best_move_alpha_beta(board, color)
     if col is not None:
         row = get_next_open_row(board, col)
